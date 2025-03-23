@@ -1,0 +1,19 @@
+{
+  "name": "QA插件",
+  "description": "QA插件",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://gzak.gzsjzyxh.cn/*", "https://gzak.gzsjzyxh.cn/*"],
+      "js": ["content/data.js","content/content.js"]
+    }
+  ]
+}
