@@ -1,10 +1,13 @@
 (function () {
     console.log("QA Content已运行");
 
+    var codeSingleQaCount = Object.keys(window.dataSingleQa).length;
+    var codeJudgedQaCount = Object.keys(window.dataJudgedQa).length;
+    var codeMultiQaCount = Object.keys(window.dataMultiQa).length;
+
     chrome.storage.local.get('dataSingleQa', ({dataSingleQa}) => {
         window.dataSingleQa = Object.assign({}, window.dataSingleQa, dataSingleQa);
         console.log(window.dataSingleQa)
-
     });
     chrome.storage.local.get('dataJudgedQa', ({dataJudgedQa}) => {
         window.dataJudgedQa = Object.assign({}, window.dataJudgedQa, dataJudgedQa);
@@ -14,6 +17,7 @@
         window.dataMultiQa = Object.assign({}, window.dataMultiQa, dataMultiQa);
         console.log(window.dataMultiQa)
     });
+
 
     function qa() {
         if (location.hostname === 'gzak.gzsjzyxh.cn') {
@@ -28,7 +32,7 @@
     function learnQq() {
         chrome.storage.local.get('learnAutoQq', ({learnAutoQq}) => {
             var bodyDoc = document.querySelector('body');
-            var isLearn = bodyDoc.dataset.isLearn;
+            var isLearn = !!bodyDoc.dataset.isLearn;
             console.log('learnAutoQq=' + learnAutoQq + ', isLearn=' + isLearn);
             if (learnAutoQq && !isLearn) {
                 try {
@@ -167,5 +171,5 @@
         }
     }
 
-    setInterval(qa, 3000);
+    setInterval(qa, 5000);
 })();

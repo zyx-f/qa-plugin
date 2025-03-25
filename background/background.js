@@ -12,15 +12,27 @@ chrome.runtime.onMessage.addListener((reqMsg, sender, sendResponse) => {
     switch (reqMsg.action) {
         case "AutoQa":
             var openAutoQq = reqMsg.data;
-            chrome.storage.local.set({openAutoQq}, function () {
-                sendResponse(respMsg(reqMsg, reqMsg.data));
-            });
+            if (openAutoQq) {
+                chrome.storage.local.set({'openAutoQq': openAutoQq, 'learnAutoQq': false}, function () {
+                    sendResponse(respMsg(reqMsg, reqMsg.data));
+                });
+            } else {
+                chrome.storage.local.set({openAutoQq}, function () {
+                    sendResponse(respMsg(reqMsg, reqMsg.data));
+                });
+            }
             break
         case "LearnQa":
             var learnAutoQq = reqMsg.data;
-            chrome.storage.local.set({learnAutoQq}, function () {
-                sendResponse(respMsg(reqMsg, reqMsg.data));
-            });
+            if (learnAutoQq) {
+                chrome.storage.local.set({'learnAutoQq': learnAutoQq, 'openAutoQq': false}, function () {
+                    sendResponse(respMsg(reqMsg, reqMsg.data));
+                });
+            } else {
+                chrome.storage.local.set({learnAutoQq}, function () {
+                    sendResponse(respMsg(reqMsg, reqMsg.data));
+                });
+            }
             break
     }
     return true; // true异步发送响应

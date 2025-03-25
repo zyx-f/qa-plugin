@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function autoQaHandleRespMsg(resp) {
         console.log(resp);
         changeAutoQaBtn();
+        changeLearnQaBtn();
     }
 
     // 自动QA事件绑定
     autoQaBtn.addEventListener('click', function () {
         reqMsgToBg(autoQaAction, autoQaBtn.dataset.open === 'false', autoQaHandleRespMsg)
     });
-
 
 
     // QA学习
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // QA学习处理响应消息的函数
     function learnQaHandleRespMsg(resp) {
         console.log(resp);
+        changeAutoQaBtn();
         changeLearnQaBtn();
     }
 
@@ -63,6 +64,15 @@ document.addEventListener('DOMContentLoaded', function () {
     learnQaBtn.addEventListener('click', function () {
         console.log(learnQaBtn.dataset.open === 'false');
         reqMsgToBg(learnQaAction, learnQaBtn.dataset.open === 'false', learnQaHandleRespMsg)
+    });
+
+    // 查看QA数据
+    var showQaBtn = document.getElementById('show-qa-btn');
+
+    // 查看QA数据事件绑定
+    showQaBtn.addEventListener('click', function () {
+        const url = chrome.runtime.getURL('popup/QADB.html');
+        window.open(url, '_blank');
     });
 
     // 发送消息到Bg

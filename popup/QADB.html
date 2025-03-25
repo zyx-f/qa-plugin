@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>多表格数据展示</title>
+    <link rel="stylesheet" href="QADB.css">
+</head>
+<body>
+<div class="nav-bar">
+    <span>总计（<span id="total-count">0</span>）</span>&nbsp;
+    <span><a href="#single-title" id="single-total">单选题（600）</a></span>&nbsp;
+    <span><a href="#judged-title" id="judged-total">是非题（600）</a></span>&nbsp;
+    <span><a href="#multi-title" id="multi-total">多选题（600）</a></span>
+</div>
+
+<!-- 单选题表格 -->
+<div class="table-container">
+    <h2 class="table-title" id="single-title">单选题</h2>
+    <table class="data-table">
+        <thead class="table-header">
+        <tr>
+            <th class="index-col">序号</th>
+            <th class="key-col">题目</th>
+            <th class="value-col">答案</th>
+        </tr>
+        </thead>
+        <tbody class="table-body" id="single-body">
+        <!--        <tr>
+                    <td>1</td>
+                    <td>用户名</td>
+                    <td>Alice</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>邮箱地址</td>
+                    <td>alice@example.com</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>会员等级</td>
+                    <td>白银会员</td>
+                </tr>-->
+        </tbody>
+    </table>
+</div>
+
+<!-- 是非题表格 -->
+<div class="table-container">
+    <h2 class="table-title" id="judged-title">是非题</h2>
+    <table class="data-table">
+        <thead class="table-header">
+        <tr>
+            <th class="index-col">序号</th>
+            <th class="key-col">题目</th>
+            <th class="value-col">答案</th>
+        </tr>
+        </thead>
+        <tbody class="table-body" id="judged-body">
+        <!--        <tr>
+                    <td>1</td>
+                    <td>产品名称</td>
+                    <td>智能手表</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>库存数量</td>
+                    <td>150件</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>销售价格</td>
+                    <td>¥1299</td>
+                </tr>-->
+        </tbody>
+    </table>
+</div>
+
+<!-- 类型C表格 -->
+<div class="table-container">
+    <h2 class="table-title" id="multi-title">多选题</h2>
+    <table class="data-table">
+        <thead class="table-header">
+        <tr>
+            <th class="index-col">序号</th>
+            <th class="key-col">题目</th>
+            <th class="value-col">答案</th>
+        </tr>
+        </thead>
+        <tbody class="table-body" id="multi-body">
+        <!--        <tr>
+                    <td>1</td>
+                    <td>项目名称</td>
+                    <td>城市绿化工程</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>预算金额</td>
+                    <td>¥5,000,000</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>完成进度</td>
+                    <td>75%</td>
+                </tr>-->
+        </tbody>
+    </table>
+</div>
+<!-- 回到顶部按钮 -->
+<button id="back-to-top" title="回到顶部">↑</button>
+<script src="./QADB.js"></script>
+</body>
+</html>
