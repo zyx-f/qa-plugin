@@ -57,7 +57,7 @@
                     }
 
                     var listsd, k, li, q, a;
-                    var saveSingle = false, saveJudged = false, saveMulti = false;
+                    var addSingleQaCount = 0, addJudgedCount = 0, addMultiCount = 0;
 
                     // 题
                     var singleDoc = document.querySelector('.xuanzheti.jQueslevel1[data-type="0"]');
@@ -70,7 +70,7 @@
                             q = li.querySelector('div.dadis div.dime p').textContent.trim();
                             a = li.querySelector('div.ok_daan span').textContent.trim();
                             if (addQa(singleYsArr, k, 'single', q, a)) {
-                                saveSingle = true;
+                                addSingleQaCount++;
                             }
                         }
                     }
@@ -85,7 +85,7 @@
                             q = li.querySelector('div.dadis div.dime p').textContent.trim();
                             a = li.querySelector('div.ok_daan span').textContent.trim();
                             if (addQa(judgedYsArr, k, 'judged', q, a)) {
-                                saveJudged = true;
+                                addJudgedCount++;
                             }
                         }
                     }
@@ -100,26 +100,35 @@
                             q = li.querySelector('div.dadis div.dime p').textContent.trim();
                             a = li.querySelector('div.ok_daan span').textContent.trim();
                             if (addQa(multiYsArr, k, 'multi', q, a)) {
-                                saveMulti = true;
+                                addMultiCount++;
                             }
                         }
                     }
                 } finally {
-                    if (saveSingle) {
+                    if (addSingleQaCount > 0) {
                         chrome.storage.local.set({'dataSingleQa': window.dataSingleQa}, function () {
-                            console.log("save dataSingleQa succeed");
+                            console.log("save dataSingleQa succeed " + addSingleQaCount);
                         });
                     }
-                    if (saveJudged) {
+                    if (addJudgedCount > 0) {
                         chrome.storage.local.set({'dataJudgedQa': window.dataJudgedQa}, function () {
-                            console.log("save dataJudgedQa succeed");
+                            console.log("save dataJudgedQa succeed " + addJudgedCount);
                         });
                     }
-                    if (saveMulti) {
+                    if (addMultiCount > 0) {
                         chrome.storage.local.set({'dataMultiQa': window.dataMultiQa}, function () {
-                            console.log("save dataMultiQa succeed");
+                            console.log("save dataMultiQa succeed " + addMultiCount);
                         });
                     }
+
+                    // 创建新的span元素
+                    const newSpan = document.createElement('span');
+                    newSpan.textContent = "单选：" + addSingleQaCount + ", 是非：" + addJudgedCount + ", 多选：" + addMultiCount;
+
+                    // 在id为feedbackBtn1的元素后插入新span
+                    const elementA = document.getElementById('feedbackBtn1');
+                    elementA.insertAdjacentElement('afterend', newSpan);
+
                     bodyDoc.dataset.isLearn = 'true';
                 }
             }
@@ -131,7 +140,7 @@
             if (q && a) {
                 switch (t) {
                     case 'single':
-                        if (!window.dataSingleQa.hasOwnProperty(q)) {
+                        if (!window.dataSingleQa.hasOwnProperty(q) || window.dataSingleQa[q] !== a) {
                             window.dataSingleQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
@@ -140,7 +149,7 @@
                             return false;
                         }
                     case 'judged':
-                        if (!window.dataJudgedQa.hasOwnProperty(q)) {
+                        if (!window.dataJudgedQa.hasOwnProperty(q) || window.dataJudgedQa[q] !== a) {
                             window.dataJudgedQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
@@ -149,7 +158,7 @@
                             return false;
                         }
                     case 'multi':
-                        if (!window.dataMultiQa.hasOwnProperty(q)) {
+                        if (!window.dataMultiQa.hasOwnProperty(q) || window.dataMultiQa[q] !== a) {
                             window.dataMultiQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
