@@ -57,7 +57,7 @@
                     }
 
                     var listsd, k, li, q, a;
-                    var addSingleQaCount = 0, addJudgedCount = 0, addMultiCount = 0;
+                    var addSingleQa = {}, addJudged = {}, addMulti = {};
 
                     // 题
                     var singleDoc = document.querySelector('.xuanzheti.jQueslevel1[data-type="0"]');
@@ -67,10 +67,10 @@
                         listsd = singleDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim();
-                            a = li.querySelector('div.ok_daan span').textContent.trim();
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
                             if (addQa(singleYsArr, k, 'single', q, a)) {
-                                addSingleQaCount++;
+                                addSingleQa[q] = a;
                             }
                         }
                     }
@@ -82,10 +82,10 @@
                         listsd = judgedDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim();
-                            a = li.querySelector('div.ok_daan span').textContent.trim();
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
                             if (addQa(judgedYsArr, k, 'judged', q, a)) {
-                                addJudgedCount++;
+                                addJudged[q] = a;
                             }
                         }
                     }
@@ -97,33 +97,44 @@
                         listsd = multiDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim();
-                            a = li.querySelector('div.ok_daan span').textContent.trim();
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
                             if (addQa(multiYsArr, k, 'multi', q, a)) {
-                                addMultiCount++;
+                                addMulti[q] = a;
                             }
                         }
                     }
                 } finally {
+                    var addSingleQaCount = Object.keys(addSingleQa).length;
                     if (addSingleQaCount > 0) {
-                        chrome.storage.local.set({'dataSingleQa': window.dataSingleQa}, function () {
-                            console.log("save dataSingleQa succeed " + addSingleQaCount);
+                        chrome.storage.local.get('dataSingleQa', ({dataSingleQa}) => {
+                            chrome.storage.local.set({'dataSingleQa': Object.assign({}, dataSingleQa, addSingleQa)}, function () {
+                                console.log("save dataSingleQa succeed " + addSingleQaCount);
+                            });
                         });
                     }
+
+                    var addJudgedCount = Object.keys(addJudged).length;
                     if (addJudgedCount > 0) {
-                        chrome.storage.local.set({'dataJudgedQa': window.dataJudgedQa}, function () {
-                            console.log("save dataJudgedQa succeed " + addJudgedCount);
+                        chrome.storage.local.get('dataJudgedQa', ({dataJudgedQa}) => {
+                            chrome.storage.local.set({'dataJudgedQa': Object.assign({}, dataJudgedQa, addJudged)}, function () {
+                                console.log("save dataJudgedQa succeed " + addJudgedCount);
+                            });
                         });
                     }
+
+                    var addMultiCount = Object.keys(addMulti).length;
                     if (addMultiCount > 0) {
-                        chrome.storage.local.set({'dataMultiQa': window.dataMultiQa}, function () {
-                            console.log("save dataMultiQa succeed " + addMultiCount);
+                        chrome.storage.local.get('dataMultiQa', ({dataMultiQa}) => {
+                            chrome.storage.local.set({'dataMultiQa': Object.assign({}, dataMultiQa, addMulti)}, function () {
+                                console.log("save dataMultiQa succeed " + addMultiCount);
+                            });
                         });
                     }
 
                     // 创建新的span元素
                     const newSpan = document.createElement('span');
-                    newSpan.textContent = "单选：" + addSingleQaCount + ", 是非：" + addJudgedCount + ", 多选：" + addMultiCount;
+                    newSpan.textContent = "单选:" + addSingleQaCount + ", 是非:" + addJudgedCount + ", 多选:" + addMultiCount;
 
                     // 在id为feedbackBtn1的元素后插入新span
                     const elementA = document.getElementById('feedbackBtn1');
@@ -180,5 +191,5 @@
         }
     }
 
-    setInterval(qa, 5000);
+    setInterval(qa, 3000);
 })();

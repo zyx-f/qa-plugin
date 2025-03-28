@@ -2,15 +2,20 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>多表格数据展示</title>
+    <title>QA数据</title>
     <link rel="stylesheet" href="QADB.css">
 </head>
 <body>
 <div class="nav-bar">
     <span>总计（<span id="total-count">0</span>）</span>&nbsp;
-    <span><a href="#single-title" id="single-total">单选题（600）</a></span>&nbsp;
-    <span><a href="#judged-title" id="judged-total">是非题（600）</a></span>&nbsp;
-    <span><a href="#multi-title" id="multi-total">多选题（600）</a></span>
+    <span><a href="#single-title" id="single-total">单选题（0）</a></span>&nbsp;
+    <span><a href="#judged-title" id="judged-total">是非题（0）</a></span>&nbsp;
+    <span><a href="#multi-title" id="multi-total">多选题（0）</a></span>&nbsp;
+    <input type="file" id="file-input" accept=".json" style="display: none"/>
+    <button id="import-btn">导入</button>
+    <button id="export-btn">导出</button>
+    <button id="backup-btn">备份</button>
+    <button id="add-qa-btn">新增QA</button>
 </div>
 
 <!-- 单选题表格 -->
@@ -22,6 +27,7 @@
             <th class="index-col">序号</th>
             <th class="key-col">题目</th>
             <th class="value-col">答案</th>
+            <th class="operate">操作</th>
         </tr>
         </thead>
         <tbody class="table-body" id="single-body">
@@ -53,6 +59,7 @@
             <th class="index-col">序号</th>
             <th class="key-col">题目</th>
             <th class="value-col">答案</th>
+            <th class="operate">操作</th>
         </tr>
         </thead>
         <tbody class="table-body" id="judged-body">
@@ -84,6 +91,7 @@
             <th class="index-col">序号</th>
             <th class="key-col">题目</th>
             <th class="value-col">答案</th>
+            <th class="operate">操作</th>
         </tr>
         </thead>
         <tbody class="table-body" id="multi-body">
@@ -105,8 +113,38 @@
         </tbody>
     </table>
 </div>
+
+<!-- 新增QA的悬浮窗 -->
+<div id="qa-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="table-title add-title">新增QA</h2>
+        <div class="form-group">
+            <label for="qa-type">题目类型:</label>
+            <select id="qa-type" class="form-control">
+                <option value="single">单选题</option>
+                <option value="judged">是非题</option>
+                <option value="multi">多选题</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="qa-question">题目:</label>
+            <textarea id="qa-question" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="qa-answer">答案:</label>
+            <input type="text" id="qa-answer" class="form-control">
+        </div>
+        <button id="save-qa-btn" class="btn-primary">保&nbsp;&nbsp;存</button>
+    </div>
+</div>
+
+<!-- 提示信息 -->
+<div id="toast" class="toast"></div>
+
 <!-- 回到顶部按钮 -->
 <button id="back-to-top" title="回到顶部">↑</button>
+<script src="../content/data.js"></script>
 <script src="./QADB.js"></script>
 </body>
 </html>
