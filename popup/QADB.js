@@ -18,16 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
         Object.entries(addSingleQa).forEach(([q, a]) => {
             total++;
             const row = document.createElement("tr");
-            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td>-</td>`;
+            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td><button class="del-row" data-type="single" data-q="${q}">删除</button></td>`;
             fragment.appendChild(row);
         });
+
         totalDoc.textContent = parseInt(totalDoc.textContent) + total;
         document.getElementById('single-total').textContent = '单选题（' + total + '）';
         document.getElementById('single-title').textContent = '单选题（' + total + '）';
         document.getElementById('single-body').appendChild(fragment);
     });
 
-    chrome.storage.local.get(['dataJudgedQa','addJudgedQa'], (result) => {
+    chrome.storage.local.get(['dataJudgedQa', 'addJudgedQa'], (result) => {
         const dataJudgedQa = result.dataJudgedQa || {};
         const addJudgedQa = result.addJudgedQa || {};
         let total = 0;
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         Object.entries(addJudgedQa).forEach(([q, a]) => {
             total++;
             const row = document.createElement("tr");
-            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td>-</td>`;
+            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td><button class="del-row" data-type="judged" data-q="${q}">删除</button></td>`;
             fragment.appendChild(row);
         });
 
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('judged-body').appendChild(fragment);
     });
 
-    chrome.storage.local.get(['dataMultiQa','addMultiQa'], (result) => {
+    chrome.storage.local.get(['dataMultiQa', 'addMultiQa'], (result) => {
         const dataMultiQa = result.dataMultiQa || {};
         const addMultiQa = result.addMultiQa || {};
         let total = 0;
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
         Object.entries(addMultiQa).forEach(([q, a]) => {
             total++;
             const row = document.createElement("tr");
-            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td>-</td>`;
+            row.innerHTML = `<td>${total}</td><td>${q}</td><td>${a}</td><td><button class="del-row" data-type="multi" data-q="${q}">删除</button></td>`;
             fragment.appendChild(row);
         });
 
@@ -94,12 +95,12 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("export-btn").onclick = function () {
         chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
             var data = {
-                dataSingleQa: result.dataSingleQa,
-                dataJudgedQa: result.dataJudgedQa,
-                dataMultiQa: result.dataMultiQa,
-                addSingleQa: result.addSingleQa,
-                addJudgedQa: result.addJudgedQa,
-                addMultiQa: result.addMultiQa,
+                dataSingleQa: result.dataSingleQa || {},
+                dataJudgedQa: result.dataJudgedQa || {},
+                dataMultiQa: result.dataMultiQa || {},
+                addSingleQa: result.addSingleQa || {},
+                addJudgedQa: result.addJudgedQa || {},
+                addMultiQa: result.addMultiQa || {},
             };
             const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
             const url = URL.createObjectURL(blob);
@@ -124,21 +125,23 @@ document.addEventListener('DOMContentLoaded', function () {
             reader.onload = function (e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa'], function (result) {
-                        if (result.dataSingleQa) {
-                            data.singleQa = Object.assign(result.dataSingleQa, data.singleQa);
-                        }
-                        if (result.dataJudgedQa) {
-                            data.judgedQa = Object.assign(result.dataJudgedQa, data.judgedQa);
-                        }
-                        if (result.dataMultiQa) {
-                            data.multiQa = Object.assign(result.dataMultiQa, data.multiQa);
-                        }
+                    chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
+                        var dataSingleQa, dataJudgedQa, dataMultiQa, addSingleQa, addJudgedQa, addMultiQa;
+                        dataSingleQa = Object.assign(result.dataSingleQa || {}, data.dataSingleQa || {});
+                        dataJudgedQa = Object.assign(result.dataJudgedQa || {}, data.dataJudgedQa || {});
+                        dataMultiQa = Object.assign(result.dataMultiQa || {}, data.dataMultiQa || {});
+                        addSingleQa = Object.assign(result.addSingleQa || {}, data.addSingleQa || {});
+                        addJudgedQa = Object.assign(result.addJudgedQa || {}, data.addJudgedQa || {});
+                        addMultiQa = Object.assign(result.addMultiQa || {}, data.addMultiQa || {});
                         chrome.storage.local.set({
-                            dataSingleQa: data.singleQa,
-                            dataJudgedQa: data.judgedQa,
-                            dataMultiQa: data.multiQa
+                            dataSingleQa: dataSingleQa,
+                            dataJudgedQa: dataJudgedQa,
+                            dataMultiQa: dataMultiQa,
+                            addSingleQa: addSingleQa,
+                            addJudgedQa: addJudgedQa,
+                            addMultiQa: addMultiQa,
                         }, function () {
+                            showToast("导入成功")
                             window.location.reload();
                         });
                     });
@@ -153,13 +156,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 备份按钮
     document.getElementById("backup-btn").onclick = function () {
-        chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa'], function (result) {
+        chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
+            const dataSingleQa = result.dataSingleQa || {};
+            const dataJudgedQa = result.dataJudgedQa || {};
+            const dataMultiQa = result.dataMultiQa || {};
+            const addSingleQa = result.addSingleQa || {};
+            const addJudgedQa = result.addJudgedQa || {};
+            const addMultiQa = result.addMultiQa || {};
+
             var backup = `
 (function () {
     console.log("QA Data已加载");
-    window.dataSingleQa = ${JSON.stringify(result.dataSingleQa || {})};
-    window.dataJudgedQa = ${JSON.stringify(result.dataJudgedQa || {})};
-    window.dataMultiQa = ${JSON.stringify(result.dataMultiQa || {})};
+    window.dataSingleQa = ${JSON.stringify(Object.assign({}, window.dataSingleQa, dataSingleQa, addSingleQa))};
+    window.dataJudgedQa = ${JSON.stringify(Object.assign({}, window.dataJudgedQa, dataJudgedQa, addJudgedQa))};
+    window.dataMultiQa = ${JSON.stringify(Object.assign({}, window.dataMultiQa, dataMultiQa, addMultiQa))};
 })();
             `
             const blob = new Blob([backup], {type: "application/json"});
@@ -197,12 +207,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // 去除空格函数
+    function removeSpaces(event) {
+        const inputElement = event.target;
+        const originalValue = inputElement.value;
+        const newValue = originalValue.replaceAll(' ', ''); // 去除所有空格
+
+        // 如果值有变化，则更新输入框的值
+        if (originalValue !== newValue) {
+            inputElement.value = newValue;
+        }
+    }
+
+    // 添加输入事件监听器
+    document.getElementById('qa-question').addEventListener('input', removeSpaces);
+    document.getElementById('qa-answer').addEventListener('input', removeSpaces);
 
     // 保存QA数据
     saveQaBtn.addEventListener('click', function () {
         const qaType = document.getElementById('qa-type').value;
-        const question = document.getElementById('qa-question').value.trim();
-        const answer = document.getElementById('qa-answer').value.trim();
+        const question = document.getElementById('qa-question').value.trim().replaceAll(' ', '');
+        const answer = document.getElementById('qa-answer').value.trim().replaceAll(' ', '');
 
         if (!question || !answer) {
             showToast('题目和答案不能为空！');
@@ -237,8 +262,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (!oldAnswer || (oldAnswer && confirm('该题目已存在，是否覆盖原有答案？'))) {
+                switch (qaType) {
+                    case 'single':
+                        addSingleQa[question] = answer;
+                        break;
+                    case 'judged':
+                        addJudgedQa[question] = answer;
+                        break;
+                    case 'multi':
+                        addMultiQa[question] = answer;
+                        break;
+                }
                 // 题目不存在，新增QA
-                chrome.storage.local.set({'addSingleQa': addSingleQa, 'addJudgedQa': addJudgedQa, 'addMultiQa': addMultiQa}, function () {
+                chrome.storage.local.set({
+                    'addSingleQa': addSingleQa,
+                    'addJudgedQa': addJudgedQa,
+                    'addMultiQa': addMultiQa
+                }, function () {
                     showToast('QA保存成功！');
 
                     // 清空表单
@@ -247,10 +287,58 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // 关闭模态框
                     modal.style.display = 'none';
+                    window.location.reload();
                 });
             }
         });
     });
+
+    // 删除
+    document.querySelectorAll('.table-body').forEach((tableBody) => {
+        tableBody.addEventListener('click', (event) => {
+            const target = event.target;
+
+            // 检查点击的是否是 del-row 按钮
+            if (target.classList.contains('del-row')) {
+                const row = target.closest('tr'); // 找到最近的 tr（行）
+                const question = target.getAttribute('data-q'); // 获取 data-q 属性
+                const type = target.getAttribute('data-type'); // 获取 data-type 属性
+                switch (type) {
+                    case 'single':
+                        chrome.storage.local.get('addSingleQa', ({addSingleQa}) => {
+                            delete addSingleQa[question];
+                            chrome.storage.local.set({addSingleQa}, () => {
+                                row.remove();
+                                showToast(`删除成功`);
+                                window.location.reload();
+                            });
+                        });
+                        break;
+                    case 'judged':
+                        chrome.storage.local.get('addJudgedQa', ({addJudgedQa}) => {
+                            delete addJudgedQa[question];
+                            chrome.storage.local.set({addJudgedQa}, () => {
+                                row.remove();
+                                showToast(`删除成功`);
+                                window.location.reload();
+                            });
+                        });
+                        break;
+                    case 'multi':
+                        chrome.storage.local.get('addMultiQa', ({addMultiQa}) => {
+                            delete addMultiQa[question];
+                            chrome.storage.local.set({addMultiQa}, () => {
+                                row.remove();
+                                showToast(`删除成功`);
+                                window.location.reload();
+                            });
+                        });
+                        break;
+                }
+            }
+        });
+    })
+
 
     // 显示提示信息
     function showToast(message) {

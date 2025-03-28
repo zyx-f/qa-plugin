@@ -1,20 +1,21 @@
 (function () {
     console.log("QA Content已运行");
 
-    var codeSingleQaCount = Object.keys(window.dataSingleQa).length;
-    var codeJudgedQaCount = Object.keys(window.dataJudgedQa).length;
-    var codeMultiQaCount = Object.keys(window.dataMultiQa).length;
+    chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
+        const dataSingleQa = result.dataSingleQa || {};
+        const dataJudgedQa = result.dataJudgedQa || {};
+        const dataMultiQa = result.dataMultiQa || {};
+        const addSingleQa = result.addSingleQa || {};
+        const addJudgedQa = result.addJudgedQa || {};
+        const addMultiQa = result.addMultiQa || {};
 
-    chrome.storage.local.get('dataSingleQa', ({dataSingleQa}) => {
-        window.dataSingleQa = Object.assign({}, window.dataSingleQa, dataSingleQa);
+        window.dataSingleQa = Object.assign({}, window.dataSingleQa, dataSingleQa, addSingleQa);
         console.log(window.dataSingleQa)
-    });
-    chrome.storage.local.get('dataJudgedQa', ({dataJudgedQa}) => {
-        window.dataJudgedQa = Object.assign({}, window.dataJudgedQa, dataJudgedQa);
+
+        window.dataJudgedQa = Object.assign({}, window.dataJudgedQa, dataJudgedQa, addJudgedQa);
         console.log(window.dataJudgedQa)
-    });
-    chrome.storage.local.get('dataMultiQa', ({dataMultiQa}) => {
-        window.dataMultiQa = Object.assign({}, window.dataMultiQa, dataMultiQa);
+
+        window.dataMultiQa = Object.assign({}, window.dataMultiQa, dataMultiQa, addMultiQa);
         console.log(window.dataMultiQa)
     });
 

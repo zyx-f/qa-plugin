@@ -225,3 +225,7 @@ button {
     display: block;
     margin: 15px auto 0; /* 上边距15px，左右自动（居中） */
 }
+
+.del-row{
+    margin-left: 0;
+}
