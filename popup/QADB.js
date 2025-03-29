@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var totalDoc = document.getElementById('total-count');
 
     chrome.storage.local.get(['dataSingleQa', 'addSingleQa'], (result) => {
-        const dataSingleQa = result.dataSingleQa || {};
+        const dataSingleQa = Object.assign({}, window.dataSingleQa, result.dataSingleQa || {});
         const addSingleQa = result.addSingleQa || {};
         let total = 0;
 
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     chrome.storage.local.get(['dataJudgedQa', 'addJudgedQa'], (result) => {
-        const dataJudgedQa = result.dataJudgedQa || {};
+        const dataJudgedQa = Object.assign({}, window.dataJudgedQa, result.dataJudgedQa || {});
         const addJudgedQa = result.addJudgedQa || {};
         let total = 0;
 
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     chrome.storage.local.get(['dataMultiQa', 'addMultiQa'], (result) => {
-        const dataMultiQa = result.dataMultiQa || {};
+        const dataMultiQa = Object.assign({}, window.dataMultiQa, result.dataMultiQa || {});
         const addMultiQa = result.addMultiQa || {};
         let total = 0;
 
@@ -127,12 +127,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = JSON.parse(e.target.result);
                     chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
                         var dataSingleQa, dataJudgedQa, dataMultiQa, addSingleQa, addJudgedQa, addMultiQa;
-                        dataSingleQa = Object.assign(result.dataSingleQa || {}, data.dataSingleQa || {});
-                        dataJudgedQa = Object.assign(result.dataJudgedQa || {}, data.dataJudgedQa || {});
-                        dataMultiQa = Object.assign(result.dataMultiQa || {}, data.dataMultiQa || {});
-                        addSingleQa = Object.assign(result.addSingleQa || {}, data.addSingleQa || {});
-                        addJudgedQa = Object.assign(result.addJudgedQa || {}, data.addJudgedQa || {});
-                        addMultiQa = Object.assign(result.addMultiQa || {}, data.addMultiQa || {});
+                        dataSingleQa = Object.assign({}, result.dataSingleQa || {}, data.dataSingleQa || {});
+                        dataJudgedQa = Object.assign({}, result.dataJudgedQa || {}, data.dataJudgedQa || {});
+                        dataMultiQa = Object.assign({}, result.dataMultiQa || {}, data.dataMultiQa || {});
+                        addSingleQa = Object.assign({}, result.addSingleQa || {}, data.addSingleQa || {});
+                        addJudgedQa = Object.assign({}, result.addJudgedQa || {}, data.addJudgedQa || {});
+                        addMultiQa = Object.assign({}, result.addMultiQa || {}, data.addMultiQa || {});
                         chrome.storage.local.set({
                             dataSingleQa: dataSingleQa,
                             dataJudgedQa: dataJudgedQa,
