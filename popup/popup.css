@@ -1,7 +1,8 @@
 body {
     font-family: 'Microsoft Yahei';
-    width: 266px;
-    min-height: 400px;
+    /*width: 266px;*/
+    /*min-height: 400px;*/
+    width: max-content;
 }
 
 button {

@@ -21,13 +21,102 @@
 
 
     function qa() {
-        if (location.hostname === 'gzak.gzsjzyxh.cn') {
-            autoQa();
+        // if (location.hostname === 'gzak.gzsjzyxh.cn') {
+        if (document.querySelectorAll('.ok_daan').length > 0) {
             learnQq();
+        } else if (document.querySelectorAll('#jConfireSubmit').length > 0) {
+            autoQa();
         }
+        // }
     }
 
     function autoQa() {
+        chrome.storage.local.get('openAutoQq', ({openAutoQq}) => {
+            console.log('openAutoQq=' + openAutoQq);
+            if (openAutoQq) {
+                var isOk;
+                var currQ = document.querySelector('.xuanzheti_ul .listsd[style=""]');
+                try {
+                    if (!currQ) {
+                        alert('未提取到当前题');
+                        return;
+                    }
+                    isOk = !!currQ.dataset.isOk;
+                    if (isOk) {
+                        return;
+                    }
+                    var q, t, a;
+                    q = currQ.querySelector('div.dime p').textContent.trim().replace(/\s+/g, "");
+                    t = currQ.parentNode.parentNode.querySelector('.xuanzheti_title').textContent.trim();
+
+                    var aNodeMap = {};
+                    var ul = currQ.querySelector('ul.grsou_li.jQuesItem');
+                    var inputs = ul.querySelectorAll('li input');
+                    for (let i = 0; i < inputs.length; i++) {
+                        inputs[i].checked && inputs[i].click();
+                        aNodeMap[inputs[i].value.trim().replace(/\s+/g, "")] = inputs[i];
+                    }
+                    switch (t) {
+                        case '单选题':
+                            a = window.dataSingleQa[q];
+                            if (a && aNodeMap[a]) {
+                                !aNodeMap[a].checked && aNodeMap[a].click();
+                            } else {
+                                alert('未找到答案：' + a);
+                            }
+                            break;
+                        case '是非题':
+                            a = window.dataJudgedQa[q];
+                            if (a && aNodeMap[a]) {
+                                !aNodeMap[a].checked && aNodeMap[a].click();
+                            } else {
+                                alert('未找到答案：' + a);
+                            }
+                            break;
+                        case '多选题':
+                            var as = window.dataMultiQa[q];
+                            if (!as) {
+                                alert('未找到答案：' + as);
+                                return;
+                            }
+                            var ass = as.split('&');
+                            for (var i in ass) {
+                                a = ass[i];
+                                if (a && aNodeMap[a]) {
+                                    !aNodeMap[a].checked && aNodeMap[a].click();
+                                } else {
+                                    alert('未找到选项：' + a);
+                                }
+                            }
+                            break;
+                        default:
+                            alert('未知题型：' + t);
+                            return;
+                    }
+                    var nqid = ul.dataset.nqid;
+                    if (nqid !== '0') {
+                        console.log('nqid=' + nqid);
+                        document.getElementById('nbtn').click();
+                    } else {
+                        const submitBtn = document.getElementById('submit_btn');
+                        if (submitBtn) {
+                            if (!(submitBtn.style.visibility === 'hidden' || submitBtn.style.display === 'none')) {
+                                submitBtn.click();
+                            }
+                        } else {
+                            alert('未找到提交按钮');
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert('自动QA功能异常');
+                } finally {
+                    if (currQ && !isOk) {
+                        currQ.dataset.isOk = 'true';
+                    }
+                }
+            }
+        });
     }
 
     function learnQq() {
@@ -68,8 +157,8 @@
                         listsd = singleDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
                             if (addQa(singleYsArr, k, 'single', q, a)) {
                                 addSingleQa[q] = a;
                             }
@@ -83,8 +172,8 @@
                         listsd = judgedDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
                             if (addQa(judgedYsArr, k, 'judged', q, a)) {
                                 addJudged[q] = a;
                             }
@@ -98,13 +187,15 @@
                         listsd = multiDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replaceAll(' ', '');
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replaceAll(' ', '');
+                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
+                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
                             if (addQa(multiYsArr, k, 'multi', q, a)) {
                                 addMulti[q] = a;
                             }
                         }
                     }
+
+                    bodyDoc.dataset.isLearn = 'true';
                 } finally {
                     var addSingleQaCount = Object.keys(addSingleQa).length;
                     if (addSingleQaCount > 0) {
@@ -141,7 +232,6 @@
                     const elementA = document.getElementById('feedbackBtn1');
                     elementA.insertAdjacentElement('afterend', newSpan);
 
-                    bodyDoc.dataset.isLearn = 'true';
                 }
             }
         });
@@ -192,5 +282,5 @@
         }
     }
 
-    setInterval(qa, 3000);
+    setInterval(qa, 1000);
 })();

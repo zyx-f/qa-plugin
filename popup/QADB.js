@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function removeSpaces(event) {
         const inputElement = event.target;
         const originalValue = inputElement.value;
-        const newValue = originalValue.replaceAll(' ', ''); // 去除所有空格
+        const newValue = originalValue.replace(/\s+/g, "");
 
         // 如果值有变化，则更新输入框的值
         if (originalValue !== newValue) {
@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 保存QA数据
     saveQaBtn.addEventListener('click', function () {
         const qaType = document.getElementById('qa-type').value;
-        const question = document.getElementById('qa-question').value.trim().replaceAll(' ', '');
-        const answer = document.getElementById('qa-answer').value.trim().replaceAll(' ', '');
+        const question = document.getElementById('qa-question').value.trim().replace(/\s+/g, "");
+        const answer = document.getElementById('qa-answer').value.trim().replace(/\s+/g, "");
 
         if (!question || !answer) {
             showToast('题目和答案不能为空！');
