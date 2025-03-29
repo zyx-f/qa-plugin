@@ -38,7 +38,7 @@
                 var currQ = document.querySelector('.xuanzheti_ul .listsd[style=""]');
                 try {
                     if (!currQ) {
-                        alert('未提取到当前题');
+                        // alert('未提取到当前题');
                         return;
                     }
                     isOk = !!currQ.dataset.isOk;
@@ -67,6 +67,11 @@
                             break;
                         case '是非题':
                             a = window.dataJudgedQa[q];
+                            // 原来的aNodeMap key 为 1，2 增加汉字的
+                            Object.values(aNodeMap).forEach(value => {
+                                aNodeMap[value.parentElement.textContent.replace(/\s+/g, "")] = value;
+                            });
+
                             if (a && aNodeMap[a]) {
                                 !aNodeMap[a].checked && aNodeMap[a].click();
                             } else {
@@ -80,12 +85,20 @@
                                 return;
                             }
                             var ass = as.split('&');
-                            for (var i in ass) {
-                                a = ass[i];
-                                if (a && aNodeMap[a]) {
-                                    !aNodeMap[a].checked && aNodeMap[a].click();
-                                } else {
-                                    alert('未找到选项：' + a);
+                            // for (var i in ass) {
+                            //     a = ass[i];
+                            //     if (a && aNodeMap[a]) {
+                            //         !aNodeMap[a].checked && aNodeMap[a].click();
+                            //     } else {
+                            //         alert('未找到选项：' + a);
+                            //     }
+                            // }
+                            for (var key in aNodeMap) {
+                                // 检查当前aNodeMap的key是否存在于ass数组中
+                                if (ass.includes(key)) {
+                                    if (aNodeMap[key] && !aNodeMap[key].checked) {
+                                        aNodeMap[key].click();
+                                    }
                                 }
                             }
                             break;
@@ -190,7 +203,7 @@
                             q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
                             a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
                             if (addQa(multiYsArr, k, 'multi', q, a)) {
-                                addMulti[q] = a;
+                                addMulti[q] = window.dataMultiQa[q];
                             }
                         }
                     }
@@ -260,10 +273,23 @@
                             return false;
                         }
                     case 'multi':
-                        if (!window.dataMultiQa.hasOwnProperty(q) || window.dataMultiQa[q] !== a) {
+                        if (!window.dataMultiQa.hasOwnProperty(q)) {
                             window.dataMultiQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
+                        } else if (window.dataMultiQa[q] !== a) {
+                            var oldA = window.dataMultiQa[q];
+                            a = [...new Set(oldA.split('&').concat(a.split('&')))].join('&');
+                            // console.log('多选题答案更新：' + q + ' -> ' + oldA);
+                            // console.log('多选题答案更新：' + q + ' -> ' + a);
+                            if (oldA !== a) {
+                                window.dataMultiQa[q] = a;
+                                ys[i].setAttribute('style', 'background-color: #3aa757 !important');
+                                return true;
+                            } else {
+                                ys[i].setAttribute('style', 'background-color: #FFA500 !important');
+                                return false;
+                            }
                         } else {
                             ys[i].setAttribute('style', 'background-color: #FFA500 !important');
                             return false;
