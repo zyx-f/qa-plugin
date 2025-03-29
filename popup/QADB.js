@@ -154,35 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // 备份按钮
-    document.getElementById("backup-btn").onclick = function () {
-        chrome.storage.local.get(['dataSingleQa', 'dataJudgedQa', 'dataMultiQa', 'addSingleQa', 'addJudgedQa', 'addMultiQa'], function (result) {
-            const dataSingleQa = result.dataSingleQa || {};
-            const dataJudgedQa = result.dataJudgedQa || {};
-            const dataMultiQa = result.dataMultiQa || {};
-            const addSingleQa = result.addSingleQa || {};
-            const addJudgedQa = result.addJudgedQa || {};
-            const addMultiQa = result.addMultiQa || {};
-
-            var backup = `
-(function () {
-    console.log("QA Data已加载");
-    window.dataSingleQa = ${JSON.stringify(Object.assign({}, window.dataSingleQa, dataSingleQa, addSingleQa))};
-    window.dataJudgedQa = ${JSON.stringify(Object.assign({}, window.dataJudgedQa, dataJudgedQa, addJudgedQa))};
-    window.dataMultiQa = ${JSON.stringify(Object.assign({}, window.dataMultiQa, dataMultiQa, addMultiQa))};
-})();
-            `
-            const blob = new Blob([backup], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = "data.js";
-            link.click();
-            URL.revokeObjectURL(url);
-            alert("备份成功！请替换插件content文件夹下的data.js文件。");
-        });
-    };
-
     // 获取DOM元素
     const addQaBtn = document.getElementById('add-qa-btn');
     const modal = document.getElementById('qa-modal');
