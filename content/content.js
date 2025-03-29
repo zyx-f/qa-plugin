@@ -21,13 +21,13 @@
 
 
     function qa() {
-        // if (location.hostname === 'gzak.gzsjzyxh.cn') {
-        if (document.querySelectorAll('.ok_daan').length > 0) {
-            learnQq();
-        } else if (document.querySelectorAll('#jConfireSubmit').length > 0) {
-            autoQa();
+        if (location.hostname === 'gzak.gzsjzyxh.cn') {
+            if (document.querySelectorAll('.ok_daan').length > 0) {
+                learnQq();
+            } else if (document.querySelectorAll('#jConfireSubmit').length > 0) {
+                autoQa();
+            }
         }
-        // }
     }
 
     function autoQa() {
