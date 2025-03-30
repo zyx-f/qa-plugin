@@ -46,7 +46,7 @@
                         return;
                     }
                     var q, t, a;
-                    q = currQ.querySelector('div.dime p').textContent.trim().replace(/\s+/g, "");
+                    q = replacePunctuation(currQ.querySelector('div.dime p').textContent.trim().replace(/\s+/g, ""));
                     t = currQ.parentNode.parentNode.querySelector('.xuanzheti_title').textContent.trim();
 
                     var aNodeMap = {};
@@ -54,7 +54,7 @@
                     var inputs = ul.querySelectorAll('li input');
                     for (let i = 0; i < inputs.length; i++) {
                         inputs[i].checked && inputs[i].click();
-                        aNodeMap[inputs[i].value.trim().replace(/\s+/g, "")] = inputs[i];
+                        aNodeMap[replacePunctuation(inputs[i].value.trim().replace(/\s+/g, ""))] = inputs[i];
                     }
                     switch (t) {
                         case '单选题':
@@ -70,7 +70,7 @@
                             a = window.dataJudgedQa[q];
                             // 原来的aNodeMap key 为 1，2 增加汉字的
                             Object.values(aNodeMap).forEach(value => {
-                                aNodeMap[value.parentElement.textContent.replace(/\s+/g, "")] = value;
+                                aNodeMap[replacePunctuation(value.parentElement.textContent.replace(/\s+/g, ""))] = value;
                             });
 
                             if (a && aNodeMap[a]) {
@@ -172,8 +172,8 @@
                         listsd = singleDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
+                            q = replacePunctuation(li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, ""));
+                            a = replacePunctuation(li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, ""));
                             if (addQa(singleYsArr, k, 'single', q, a)) {
                                 addSingleQa[q] = a;
                             }
@@ -187,8 +187,8 @@
                         listsd = judgedDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
+                            q = replacePunctuation(li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, ""));
+                            a = replacePunctuation(li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, ""));
                             if (addQa(judgedYsArr, k, 'judged', q, a)) {
                                 addJudged[q] = a;
                             }
@@ -202,8 +202,8 @@
                         listsd = multiDoc.querySelectorAll('li.listsd');
                         for (k = 0; k < listsd.length; k++) {
                             li = listsd[k];
-                            q = li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, "");
-                            a = li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, "");
+                            q = replacePunctuation(li.querySelector('div.dadis div.dime p').textContent.trim().replace(/\s+/g, ""));
+                            a = replacePunctuation(li.querySelector('div.ok_daan span').textContent.trim().replace(/\s+/g, ""));
                             if (addQa(multiYsArr, k, 'multi', q, a)) {
                                 addMulti[q] = window.dataMultiQa[q];
                             }
@@ -257,7 +257,12 @@
             if (q && a) {
                 switch (t) {
                     case 'single':
-                        if (!window.dataSingleQa.hasOwnProperty(q) || window.dataSingleQa[q] !== a) {
+                        if (!window.dataSingleQa.hasOwnProperty(q)) {
+                            window.dataSingleQa[q] = a;
+                            ys[i].setAttribute('style', 'background-color: #3aa757 !important');
+                            return true;
+                        } else if (window.dataSingleQa[q] !== a) {
+                            console.log('单选题答案更新：q=' + q + '\noldA=' + window.dataJudgedQa[q] + '\nnewA=' + a);
                             window.dataSingleQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
@@ -266,7 +271,12 @@
                             return false;
                         }
                     case 'judged':
-                        if (!window.dataJudgedQa.hasOwnProperty(q) || window.dataJudgedQa[q] !== a) {
+                        if (!window.dataJudgedQa.hasOwnProperty(q)) {
+                            window.dataJudgedQa[q] = a;
+                            ys[i].setAttribute('style', 'background-color: #3aa757 !important');
+                            return true;
+                        } else if (window.dataJudgedQa[q] !== a) {
+                            console.log('是否题答案更新：q=' + q + '\noldA=' + window.dataJudgedQa[q] + '\nnewA=' + a);
                             window.dataJudgedQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
                             return true;
@@ -308,6 +318,38 @@
             ys[i].setAttribute('style', 'background-color: #FF4500 !important');
             return false;
         }
+    }
+
+    function replacePunctuation(text) {
+        const punctuationMap = {
+            ',': '，',
+            '.': '。',
+            '?': '？',
+            '!': '！',
+            ':': '：',
+            ';': '；',
+            '"': '“',
+            "'": '‘',
+            '(': '（',
+            ')': '）',
+            '[': '［',
+            ']': '］',
+            '{': '｛',
+            '}': '｝',
+            '<': '＜',
+            '>': '＞',
+            '/': '／',
+            '\\': '＼',
+            '&': '＆',
+            '%': '％',
+            '#': '＃',
+            '@': '＠',
+            '$': '＄'
+        };
+
+        return text.replace(/[,.?!:;"'(){}\[\]<>\/\\&%#@$]/g, (match) => {
+            return punctuationMap[match] || match;
+        });
     }
 
     setInterval(qa, 1000);
