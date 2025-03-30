@@ -63,6 +63,7 @@
                                 !aNodeMap[a].checked && aNodeMap[a].click();
                             } else {
                                 alert('未找到答案：' + a);
+                                return;
                             }
                             break;
                         case '是非题':
@@ -76,6 +77,7 @@
                                 !aNodeMap[a].checked && aNodeMap[a].click();
                             } else {
                                 alert('未找到答案：' + a);
+                                return;
                             }
                             break;
                         case '多选题':
