@@ -88,7 +88,7 @@
                             }
                             if (a.indexOf('＆') !== -1) {
                                 console.log('发现异常符号：' + a);
-                                a = a.replace('＆', '&');
+                                a = a.replaceAll('＆', '&');
                             }
                             var ass = a.split('&');
                             // for (var i in ass) {
@@ -299,7 +299,7 @@
                     case 'multi':
                         if (a.indexOf('＆') !== -1) {
                             console.log('发现异常符号：' + a);
-                            a = a.replace('＆', '&');
+                            a = a.replaceAll('＆', '&');
                         }
                         if (!window.dataMultiQa.hasOwnProperty(q)) {
                             window.dataMultiQa[q] = a;

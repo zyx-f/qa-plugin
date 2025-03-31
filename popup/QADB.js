@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '>': '＞',
             '/': '／',
             '\\': '＼',
-            '&': '＆',
+            '＆': '&',
             '%': '％',
             '#': '＃',
             '@': '＠',
