@@ -81,12 +81,16 @@
                             }
                             break;
                         case '多选题':
-                            var as = window.dataMultiQa[q];
-                            if (!as) {
-                                alert('未找到答案：' + as);
+                            a = window.dataMultiQa[q];
+                            if (!a) {
+                                alert('未找到答案：' + a);
                                 return;
                             }
-                            var ass = as.split('&');
+                            if (a.indexOf('＆') !== -1) {
+                                console.log('发现异常符号：' + a);
+                                a = a.replace('＆', '&');
+                            }
+                            var ass = a.split('&');
                             // for (var i in ass) {
                             //     a = ass[i];
                             //     if (a && aNodeMap[a]) {
@@ -95,13 +99,21 @@
                             //         alert('未找到选项：' + a);
                             //     }
                             // }
+                            var isClick = false;
                             for (var key in aNodeMap) {
                                 // 检查当前aNodeMap的key是否存在于ass数组中
                                 if (ass.includes(key)) {
                                     if (aNodeMap[key] && !aNodeMap[key].checked) {
                                         aNodeMap[key].click();
+                                        isClick = true;
                                     }
                                 }
+                            }
+                            if (!isClick) {
+                                alert("未点击选项")
+                                console.log("未点击选项")
+                                console.log(aNodeMap)
+                                console.log(ass)
                             }
                             break;
                         default:
@@ -285,6 +297,10 @@
                             return false;
                         }
                     case 'multi':
+                        if (a.indexOf('＆') !== -1) {
+                            console.log('发现异常符号：' + a);
+                            a = a.replace('＆', '&');
+                        }
                         if (!window.dataMultiQa.hasOwnProperty(q)) {
                             window.dataMultiQa[q] = a;
                             ys[i].setAttribute('style', 'background-color: #3aa757 !important');
@@ -340,7 +356,7 @@
             '>': '＞',
             '/': '／',
             '\\': '＼',
-            '&': '＆',
+            '＆': '&',
             '%': '％',
             '#': '＃',
             '@': '＠',
