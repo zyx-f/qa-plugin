@@ -14,7 +14,7 @@
     {
       "matches": ["http://*/*", "https://*/*"],
 //      "matches": ["http://gzak.gzsjzyxh.cn/*", "https://gzak.gzsjzyxh.cn/*"],
-      "js": ["content/data.js","content/content.js"]
+      "js": ["content/config.js", "content/data.js", "content/content.js"]
     }
   ]
 }

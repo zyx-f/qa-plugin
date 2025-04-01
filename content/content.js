@@ -21,7 +21,7 @@
 
 
     function qa() {
-        if (location.hostname === 'gzak.gzsjzyxh.cn') {
+        if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
             } else if (document.querySelectorAll('#jConfireSubmit').length > 0) {
