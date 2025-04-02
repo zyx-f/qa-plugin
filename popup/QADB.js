@@ -345,7 +345,8 @@ document.addEventListener('DOMContentLoaded', function () {
             '%': '％',
             '#': '＃',
             '@': '＠',
-            '$': '＄'
+            '$': '＄',
+            '~': '～',
         };
 
         return text.replace(/[,.?!:;"'(){}\[\]<>\/\\&%#@$]/g, (match) => {
