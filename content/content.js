@@ -21,6 +21,11 @@
 
 
     function qa() {
+        try{
+            videoClickBtnFun();
+        }catch (e){
+            console.error(e);
+        }
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
@@ -28,6 +33,17 @@
                 autoQa();
             }
         }
+    }
+
+    function videoClickBtnFun(){
+        chrome.storage.local.get('videoBtn', ({videoBtn}) => {
+            if(videoBtn){
+                let but = document.querySelector('td div.ui_buttons input.ui_state_highlight');
+                if (but) {
+                    but.click();
+                }
+            }
+        });
     }
 
     function autoQa() {

@@ -1,6 +1,7 @@
 // action
 var autoQaAction = "AutoQa";
 var learnQaAction = "LearnQa";
+var videoClickBtnAction = "VideoClickBtn";
 
 function getReqMsg(action, data) {
     return {

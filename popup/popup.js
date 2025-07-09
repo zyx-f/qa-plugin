@@ -66,6 +66,43 @@ document.addEventListener('DOMContentLoaded', function () {
         reqMsgToBg(learnQaAction, learnQaBtn.dataset.open === 'false', learnQaHandleRespMsg)
     });
 
+
+    // 开启视频按钮
+    var videoClickBtn = document.getElementById('video-click-btn');
+    // 修改开启视频按钮
+    changeVideoClickBtn();
+
+    function changeVideoClickBtn() {
+        chrome.storage.local.get('videoBtn', ({videoBtn}) => {
+            console.log('videoBtn=' + videoBtn)
+            if (videoBtn) {
+                videoClickBtn.textContent = '停止视频按钮'
+                videoClickBtn.style.backgroundColor = '#3aa757';
+                videoClickBtn.dataset.open = 'true';
+            } else {
+                videoClickBtn.textContent = '开启视频按钮'
+                videoClickBtn.style.backgroundColor = '#FFA500';
+                videoClickBtn.dataset.open = 'false';
+            }
+        });
+    }
+
+    // 开启视频按钮处理响应消息的函数
+    function videoClickBtnHandleRespMsg(resp) {
+        console.log(resp);
+        changeVideoClickBtn();
+    }
+
+    // QA学习事件绑定
+    videoClickBtn.addEventListener('click', function () {
+        console.log(videoClickBtn.dataset.open === 'false');
+        reqMsgToBg(videoClickBtnAction, videoClickBtn.dataset.open === 'false', videoClickBtnHandleRespMsg)
+    });
+
+
+
+
+
     // 查看QA数据
     var showQaBtn = document.getElementById('show-qa-btn');
 

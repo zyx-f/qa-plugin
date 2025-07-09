@@ -34,6 +34,12 @@ chrome.runtime.onMessage.addListener((reqMsg, sender, sendResponse) => {
                 });
             }
             break
+        case "VideoClickBtn":
+            var videoBtn = reqMsg.data;
+            chrome.storage.local.set({videoBtn}, function () {
+                sendResponse(respMsg(reqMsg, reqMsg.data));
+            });
+            break
     }
     return true; // true异步发送响应
 });
