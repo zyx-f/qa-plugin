@@ -100,7 +100,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
+    // 开启视频按钮
+    var downCodeBtn = document.getElementById('down-code-btn');
+    // QA学习事件绑定
+    downCodeBtn.addEventListener('click', function () {
+        console.log('down-code-btn');
+        reqMsgToCont(downCodeAction, true)
+    });
 
 
     // 查看QA数据
@@ -115,5 +121,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // 发送消息到Bg
     function reqMsgToBg(action, data, callback) {
         chrome.runtime.sendMessage(getReqMsg(action, data), callback);
+    }
+
+    // 发送消息到content
+    function reqMsgToCont(action, data){
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, getReqMsg(action, data));
+        });
     }
 });

@@ -2,6 +2,7 @@
 var autoQaAction = "AutoQa";
 var learnQaAction = "LearnQa";
 var videoClickBtnAction = "VideoClickBtn";
+var downCodeAction = "DownCode";
 
 function getReqMsg(action, data) {
     return {

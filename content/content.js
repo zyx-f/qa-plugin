@@ -26,6 +26,11 @@
         }catch (e){
             console.error(e);
         }
+        try{
+            videoClickBtnFun2();
+        }catch (e){
+            console.error(e);
+        }
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
@@ -39,8 +44,18 @@
         chrome.storage.local.get('videoBtn', ({videoBtn}) => {
             if(videoBtn){
                 let but = document.querySelector('td div.ui_buttons input.ui_state_highlight');
-                if (but) {
-                    but.click();
+                but && but.click();
+            }
+        });
+    }
+
+    function videoClickBtnFun2(){
+        chrome.storage.local.get('videoBtn', ({videoBtn}) => {
+            if(videoBtn){
+                let layerCont = document.querySelector('.layui-layer .layui-layer-content');
+                if(layerCont && layerCont.textContent === '本节学习完成，请点击下一节课继续学习。'){
+                    let but = document.querySelector('.layui-layer .layui-layer-btn0');
+                    but && but.click();
                 }
             }
         });
@@ -384,6 +399,119 @@
             return punctuationMap[match] || match;
         });
     }
+
+    function insertAfterBody(htmlString, contentToInsert) {
+        // 使用正则匹配 <body...>（包括带属性的情况）
+        const bodyRegex = /<body[^>]*>/i;
+        const match = htmlString.match(bodyRegex);
+
+        if (match) {
+            const bodyTag = match[0];
+            const insertPos = match.index + bodyTag.length;
+            return (
+                htmlString.substring(0, insertPos) +
+                contentToInsert +
+                htmlString.substring(insertPos)
+            );
+        }
+
+        return htmlString; // 没找到 <body> 标签，返回原字符串
+    }
+
+    function downloadHTML() {
+        // 获取完整的HTML
+        var htmlContent = document.documentElement.outerHTML;
+
+        var failedStr= '';
+        var sccussNum = 0;
+        var iframs = document.querySelectorAll('iframe');
+
+        for(var i = 0; i < iframs.length; i++){
+
+            var ifram = iframs[i];
+            if (ifram.contentDocument || ifram.contentWindow.document) {
+
+                var iframeDocument = ifram.contentDocument || ifram.contentWindow.document;
+                var innerContent = `<!--ifram${i}-->` + iframeDocument.body.innerHTML;
+                var iframeStr =  ifram.outerHTML;
+
+                var parentStr = ifram.parentElement.outerHTML;
+
+                var temp = '';
+                temp += iframeStr + '\n\n\n\n';
+                temp += parentStr + '\n\n';
+
+                if(htmlContent.includes(iframeStr)){
+                    htmlContent = htmlContent.replace(iframeStr, innerContent)
+                    sccussNum++;
+                    temp += 'success--------------------------------------------------------\n\n';
+
+                }else{
+
+                    var parentHead = parentStr.substring(parentStr.indexOf('<'), parentStr.indexOf('<iframe') + '<iframe'.length + 1);
+
+                    temp += parentHead + '\n\n';
+                    temp += htmlContent.includes(parentHead) + '\n\n';
+                    temp += (htmlContent.split(parentHead).length === 1) + '\t' + htmlContent.split(parentHead).length + '\n\n';
+                    temp += ((parentStr.split('<iframe').length - 1) === 1) + '\n\n';
+
+                    if(htmlContent.includes(parentHead) && htmlContent.split(parentHead).length === 1
+                        && (parentStr.split('<iframe').length - 1) === 1){
+                            var start = 0;
+                            var end = htmlContent.indexOf(parentHead) + parentHead.length + 1 - ('<iframe'.length + 1);
+                            var j = htmlContent.substring(start, end);
+                            var k = htmlContent.substring(end);
+
+                            end = end + k.indexOf('<iframe');
+                            j = htmlContent.substring(start, end);
+                            k = htmlContent.substring(end);
+                            k = k.substring(k.indexOf('</iframe>') + '</iframe>'.length);
+                            htmlContent = j + innerContent + k;
+                        temp += 'success else--------------------------------------------------------\n\n';
+                    }else{
+                        temp += 'failed--------------------------------------------------------\n\n';
+                    }
+                }
+                failedStr += temp;
+            }
+        }
+        if(iframs.length !== sccussNum){
+            var scuessStr = `<h3>${iframs.length}个iframe 成功替换${sccussNum}个</h3><textarea>${failedStr}</textarea>`
+            htmlContent = insertAfterBody(htmlContent, scuessStr);
+        }
+
+
+        // 获取页面标题，如果不存在则使用默认文件名
+        const pageTitle = document.title.trim();
+        const fileName = pageTitle ? `${pageTitle}.html` : 'page.html';
+
+        // 创建Blob对象
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+
+        // 创建下载链接
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;  // 使用动态生成的文件名
+
+        // 触发点击下载
+        document.body.appendChild(a);
+        a.click();
+
+        // 清理
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+    }
+
+    chrome.runtime.onMessage.addListener(function(reqMsg, sender, sendResponse) {
+        switch (reqMsg.action) {
+            case "DownCode":
+                downloadHTML();
+                break;
+        }
+    });
 
     setInterval(qa, 1000);
 })();
