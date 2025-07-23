@@ -64,3 +64,18 @@ function respMsg(reqMsg, data = '') {
     reqMsg.msgType = 'resp';
     return reqMsg;
 }
+
+chrome.runtime.onInstalled.addListener(() => {
+    console.log('MV3 Extension installed. Rules are active.');
+});
+
+// 监听所有请求发起的事件
+chrome.webRequest.onBeforeRequest.addListener(
+    function(details) {
+        console.log("onBeforeRequest:", details.url, details.method, details.type);
+        if(details.url === "https://cms.slyb.top/AliPeopleIMG/AliPeopleIMGSTUDY" ){
+            alert("已上传拍照！");
+        }
+    },
+    { urls: ["<all_urls>"] } // 监听所有 URL 的请求
+);

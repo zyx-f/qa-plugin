@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/override.js"
+      }
+    },
+    "condition": {
+      "urlFilter": "*cms.slyb.top*devtool.min.js*",
+      "resourceTypes": ["script"]
+    }
+  }
+]

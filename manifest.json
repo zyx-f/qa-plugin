@@ -6,7 +6,8 @@
   "background": {
     "service_worker": "background/background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab", "scripting", "declarativeNetRequest", "webRequest"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "action": {
     "default_popup": "popup/popup.html"
   },
@@ -15,6 +16,22 @@
       "matches": ["http://*/*", "https://*/*"],
 //      "matches": ["http://gzak.gzsjzyxh.cn/*", "https://gzak.gzsjzyxh.cn/*"],
       "js": ["content/config.js", "content/data.js", "content/content.js"]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["override.js"],
+      "matches": ["http://*/*", "https://*/*"]
     }
   ]
 }
