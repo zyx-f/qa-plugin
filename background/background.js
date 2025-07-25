@@ -74,7 +74,15 @@ chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
         console.log("onBeforeRequest:", details.url, details.method, details.type);
         if(details.url === "https://cms.slyb.top/AliPeopleIMG/AliPeopleIMGSTUDY" ){
-            alert("已上传拍照！");
+            console.log('------------已上传拍照-----------------');
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    func: () => {
+                        alert('已上传拍照！'); // 或自定义DOM弹窗
+                    },
+                });
+            });
         }
     },
     { urls: ["<all_urls>"] } // 监听所有 URL 的请求
