@@ -369,5 +369,38 @@
         });
     }
 
-    setInterval(qa, 1000);
+    // setInterval(qa, 1000);
+
+
+    if (location.hostname === 'www.longanlaw.com') {
+        chrome.storage.local.get('isGetUrlsBtn', ({isGetUrlsBtn}) => {
+            if(isGetUrlsBtn){
+                getPageUrls();
+            }
+        });
+    }
+
+    function getPageUrls() {
+        var urls = '';
+        var totalPage = parseInt(document.querySelector('.top .total-pages').textContent)
+        var pageNum = parseInt(document.querySelector('#current-page-selector').value)
+        console.log(`总页数:${totalPage}, 当前页:${pageNum}`);
+        if (pageNum === 1) {
+            localStorage.removeItem('urls');
+            console.log("初始值：" + localStorage.getItem('urls'));
+        } else {
+            urls = localStorage.getItem('urls');
+        }
+        var aList = document.querySelectorAll('#the-list .row-title');
+        for (var i = 0; i < aList.length; i++) {
+            urls += '"' + aList[i]['href'] + '",\n';
+        }
+        //urls = '[' + urls + ']';
+        localStorage.setItem('urls', urls);
+        if (pageNum === totalPage) {
+            console.log(urls);
+        } else if (pageNum < totalPage) {
+            document.querySelector('.top .next-page').click()
+        }
+    }
 })();

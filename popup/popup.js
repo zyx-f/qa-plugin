@@ -79,4 +79,35 @@ document.addEventListener('DOMContentLoaded', function () {
     function reqMsgToBg(action, data, callback) {
         chrome.runtime.sendMessage(getReqMsg(action, data), callback);
     }
+
+    // 获取URLS
+    var getUrlsBtn = document.getElementById('get-urls-btn');
+
+    // 修改获取URLS按钮
+    changeGetUrlsBtn();
+
+    function changeGetUrlsBtn() {
+        chrome.storage.local.get('isGetUrlsBtn', ({isGetUrlsBtn}) => {
+            console.log('isGetUrlsBtn=' + isGetUrlsBtn)
+            if (isGetUrlsBtn) {
+                getUrlsBtn.textContent = '停止自动QA'
+                getUrlsBtn.style.backgroundColor = '#3aa757';
+                getUrlsBtn.dataset.open = 'true';
+            } else {
+                getUrlsBtn.textContent = '开启自动QA'
+                getUrlsBtn.style.backgroundColor = '#FFA500';
+                getUrlsBtn.dataset.open = 'false';
+            }
+        });
+    }
+
+    // QA学习事件绑定
+    getUrlsBtn.addEventListener('click', function () {
+        chrome.storage.local.get('isGetUrlsBtn', ({isGetUrlsBtn}) => {
+            isGetUrlsBtn = !isGetUrlsBtn
+            chrome.storage.local.set({'isGetUrlsBtn': isGetUrlsBtn}, function () {
+                changeGetUrlsBtn();
+            });
+        });
+    });
 });
