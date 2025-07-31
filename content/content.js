@@ -514,4 +514,9 @@
     });
 
     setInterval(qa, 1000);
+
+    // ✅ 正确方式：动态加载外部脚本
+    // const script = document.createElement('script');
+    // script.src = chrome.runtime.getURL('injected.js'); // 扩展内的 JS 文件
+    // document.body.appendChild(script);
 })();

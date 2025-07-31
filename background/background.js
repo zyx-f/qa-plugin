@@ -83,6 +83,19 @@ chrome.webRequest.onBeforeRequest.addListener(
                     },
                 });
             });
+        }else if(details.url === "https://cms.slyb.top/General/Checkstudy"){
+            // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            //     chrome.scripting.executeScript({
+            //         target: { tabId: tabs[0].id },
+            //         func: () => {
+            //             console.log(window.success);
+            //             window.success = function() {
+            //                 console.log("被扩展修改后的函数！");
+            //             };
+            //             console.log(window.success);
+            //         },
+            //     });
+            // });
         }
     },
     { urls: ["<all_urls>"] } // 监听所有 URL 的请求
