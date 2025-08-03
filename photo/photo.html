@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学员照片</title>
+    <link rel="stylesheet" href="photo.css">
+</head>
+<body>
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>照片</th>
+        </tr>
+        </thead>
+        <tbody>
+       <!-- <tr data-name="张三">
+            <td class="name-cell">
+                张三<br/>
+                <button class="delete-user-btn" onclick="deleteUser(this.parentNode)">删除</button>
+            </td>
+            <td>
+                <div class="photos-container">
+                    <div class="photo-item" draggable="true">
+                        <img src="./1.png" onclick="openModal(this)">
+                        <div class="photo-caption delete-btn" onclick="deletePhoto(this.parentNode)">删除</div>
+                    </div>
+                    <div class="photo-item add-photo-item">
+                        <img src="img/jia.png">
+                        <div class="photo-caption">增加照片</div>
+                    </div>
+                </div>
+            </td>
+        </tr>-->
+        </tbody>
+    </table>
+
+    <button id="add-student-btn">增加新学员</button>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+    <canvas id="canvas" width="400" height="300" style="display: none;"></canvas>
+</div>
+
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-div">
+            <img id="modalImage" class="modal-image" src="" >
+            <!--<span class="close">×</span>-->
+        </div>
+    </div>
+</div>
+<script src="./crypto-js.min.js"></script>
+<script src="./photo.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #4a6fa5;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+td {
+    padding: 15px;
+    vertical-align: top;
+    border-bottom: 1px solid #ddd;
+}
+
+.name-cell {
+    font-weight: bold;
+    color: #2c3e50;
+    width: 90px;
+    /*cursor: pointer; !* 添加光标提示可点击 *!*/
+}
+
+.name-cell.editing {
+    padding: 0; /* 编辑状态下调整内边距，让输入框看起来更自然 */
+}
+
+.name-cell.editing input {
+    width: calc(100% - 10px); /* 适应单元格宽度 */
+    padding: 15px;
+    box-sizing: border-box; /* 包含内边距在宽度内 */
+    border: 1px solid #ccc;
+    font-size: 1em;
+    font-family: 'Arial', sans-serif;
+    color: #2c3e50;
+    background-color: #fff;
+}
+
+
+.photos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 120px; /* 确保容器有高度以便放置 */
+}
+
+.photo-item {
+    position: relative;
+    width: 160px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.photo-caption.delete-btn {
+    display: none;
+    cursor: pointer;
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
+.photo-item:hover .photo-caption.delete-btn {
+    display: block;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.modal-div {
+    position: relative;
+    display: inline-block;
+}
+
+.close {
+    position: absolute;
+    top: -10px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 拖动排序 */
+.photo-item[draggable="true"] {
+    cursor: grab;
+}
+
+.photo-item[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+/* 关键改动：让拖拽的项目不可见但仍占用空间 */
+.photo-item.dragging {
+    opacity: 0;
+}
+
+/* 阻止在拖动期间选择文本 */
+.photo-item img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.photo-item.add-photo-item {
+    cursor: pointer; /* 将增加照片按钮设置为可点击光标 */
+}
+
+#add-student-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#add-student-btn:hover {
+    background-color: #218838;
+}
+
+.delete-user-btn {
+    display: none;
+    margin-top: 10px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 2px 8px 2px 8px;
+    /*cursor: pointer;*/
+    font-size: 12px;
+}
+
+.name-cell:hover .delete-user-btn {
+    display: inline-block;
+    cursor: pointer; /* 添加光标提示可点击 */
+}

@@ -24,12 +24,12 @@
         try{
             videoClickBtnFun();
         }catch (e){
-            console.error(e);
+            // console.error(e);
         }
         try{
             videoClickBtnFun2();
         }catch (e){
-            console.error(e);
+            // console.error(e);
         }
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {

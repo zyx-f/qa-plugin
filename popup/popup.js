@@ -129,4 +129,13 @@ document.addEventListener('DOMContentLoaded', function () {
             chrome.tabs.sendMessage(tabs[0].id, getReqMsg(action, data));
         });
     }
+
+    // 查看QA数据
+    var studentPhotoBtn = document.getElementById('student-photo-btn');
+
+    // 查看QA数据事件绑定
+    studentPhotoBtn.addEventListener('click', function () {
+        const url = chrome.runtime.getURL('photo/photo.html');
+        window.open(url, '_blank');
+    });
 });
