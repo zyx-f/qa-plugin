@@ -192,7 +192,7 @@ td {
     background-color: #218838;
 }
 
-.delete-user-btn {
+.delete-student-btn {
     display: none;
     margin-top: 10px;
     background-color: rgba(255, 0, 0, 0.7);
@@ -204,7 +204,7 @@ td {
     font-size: 12px;
 }
 
-.name-cell:hover .delete-user-btn {
+.name-cell:hover .delete-student-btn {
     display: inline-block;
     cursor: pointer; /* 添加光标提示可点击 */
 }

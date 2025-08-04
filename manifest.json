@@ -31,7 +31,8 @@
       "js": [
         "content/config.js",
         "content/data.js",
-        "content/content.js"
+        "content/content.js",
+        "photo/crypto-js.min.js"
       ]
     }
   ],
@@ -47,7 +48,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "override.js"
+        "override.js",
+        "hook/hook.js",
+        "photo/crypto-js.min.js"
       ],
       "matches": [
         "http://*/*",

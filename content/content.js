@@ -21,16 +21,12 @@
 
 
     function qa() {
-        try{
-            videoClickBtnFun();
-        }catch (e){
-            // console.error(e);
-        }
-        try{
+
+        if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
+            // 确认按钮
             videoClickBtnFun2();
-        }catch (e){
-            // console.error(e);
         }
+
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
@@ -38,27 +34,38 @@
                 autoQa();
             }
         }
+
+        // 确认按钮
+        videoClickBtnFun();
     }
 
-    function videoClickBtnFun(){
-        chrome.storage.local.get('videoBtn', ({videoBtn}) => {
-            if(videoBtn){
-                let but = document.querySelector('td div.ui_buttons input.ui_state_highlight');
-                but && but.click();
-            }
-        });
-    }
-
-    function videoClickBtnFun2(){
-        chrome.storage.local.get('videoBtn', ({videoBtn}) => {
-            if(videoBtn){
-                let layerCont = document.querySelector('.layui-layer .layui-layer-content');
-                if(layerCont && layerCont.textContent === '本节学习完成，请点击下一节课继续学习。'){
-                    let but = document.querySelector('.layui-layer .layui-layer-btn0');
+    function videoClickBtnFun() {
+        try {
+            chrome.storage.local.get('videoBtn', ({videoBtn}) => {
+                if (videoBtn) {
+                    let but = document.querySelector('td div.ui_buttons input.ui_state_highlight');
                     but && but.click();
                 }
-            }
-        });
+            });
+        } catch (e) {
+            // console.error(e);
+        }
+    }
+
+    function videoClickBtnFun2() {
+        try {
+            chrome.storage.local.get('videoBtn', ({videoBtn}) => {
+                if (videoBtn) {
+                    let layerCont = document.querySelector('.layui-layer .layui-layer-content');
+                    if (layerCont && layerCont.textContent === '本节学习完成，请点击下一节课继续学习。') {
+                        let but = document.querySelector('.layui-layer .layui-layer-btn0');
+                        but && but.click();
+                    }
+                }
+            });
+        } catch (e) {
+            // console.error(e);
+        }
     }
 
     function autoQa() {
@@ -422,18 +429,18 @@
         // 获取完整的HTML
         var htmlContent = document.documentElement.outerHTML;
 
-        var failedStr= '';
+        var failedStr = '';
         var sccussNum = 0;
         var iframs = document.querySelectorAll('iframe');
 
-        for(var i = 0; i < iframs.length; i++){
+        for (var i = 0; i < iframs.length; i++) {
 
             var ifram = iframs[i];
             if (ifram.contentDocument || ifram.contentWindow.document) {
 
                 var iframeDocument = ifram.contentDocument || ifram.contentWindow.document;
                 var innerContent = `<!--ifram${i}-->` + iframeDocument.body.innerHTML;
-                var iframeStr =  ifram.outerHTML;
+                var iframeStr = ifram.outerHTML;
 
                 var parentStr = ifram.parentElement.outerHTML;
 
@@ -441,12 +448,12 @@
                 temp += iframeStr + '\n\n\n\n';
                 temp += parentStr + '\n\n';
 
-                if(htmlContent.includes(iframeStr)){
+                if (htmlContent.includes(iframeStr)) {
                     htmlContent = htmlContent.replace(iframeStr, innerContent)
                     sccussNum++;
                     temp += 'success--------------------------------------------------------\n\n';
 
-                }else{
+                } else {
 
                     var parentHead = parentStr.substring(parentStr.indexOf('<'), parentStr.indexOf('<iframe') + '<iframe'.length + 1);
 
@@ -455,27 +462,27 @@
                     temp += (htmlContent.split(parentHead).length === 1) + '\t' + htmlContent.split(parentHead).length + '\n\n';
                     temp += ((parentStr.split('<iframe').length - 1) === 1) + '\n\n';
 
-                    if(htmlContent.includes(parentHead) && htmlContent.split(parentHead).length === 1
-                        && (parentStr.split('<iframe').length - 1) === 1){
-                            var start = 0;
-                            var end = htmlContent.indexOf(parentHead) + parentHead.length + 1 - ('<iframe'.length + 1);
-                            var j = htmlContent.substring(start, end);
-                            var k = htmlContent.substring(end);
+                    if (htmlContent.includes(parentHead) && htmlContent.split(parentHead).length === 1
+                        && (parentStr.split('<iframe').length - 1) === 1) {
+                        var start = 0;
+                        var end = htmlContent.indexOf(parentHead) + parentHead.length + 1 - ('<iframe'.length + 1);
+                        var j = htmlContent.substring(start, end);
+                        var k = htmlContent.substring(end);
 
-                            end = end + k.indexOf('<iframe');
-                            j = htmlContent.substring(start, end);
-                            k = htmlContent.substring(end);
-                            k = k.substring(k.indexOf('</iframe>') + '</iframe>'.length);
-                            htmlContent = j + innerContent + k;
+                        end = end + k.indexOf('<iframe');
+                        j = htmlContent.substring(start, end);
+                        k = htmlContent.substring(end);
+                        k = k.substring(k.indexOf('</iframe>') + '</iframe>'.length);
+                        htmlContent = j + innerContent + k;
                         temp += 'success else--------------------------------------------------------\n\n';
-                    }else{
+                    } else {
                         temp += 'failed--------------------------------------------------------\n\n';
                     }
                 }
                 failedStr += temp;
             }
         }
-        if(iframs.length !== sccussNum){
+        if (iframs.length !== sccussNum) {
             var scuessStr = `<h3>${iframs.length}个iframe 成功替换${sccussNum}个</h3><textarea>${failedStr}</textarea>`
             htmlContent = insertAfterBody(htmlContent, scuessStr);
         }
@@ -486,7 +493,7 @@
         const fileName = pageTitle ? `${pageTitle}.html` : 'page.html';
 
         // 创建Blob对象
-        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const blob = new Blob([htmlContent], {type: 'text/html'});
 
         // 创建下载链接
         const url = URL.createObjectURL(blob);
@@ -505,7 +512,7 @@
         }, 100);
     }
 
-    chrome.runtime.onMessage.addListener(function(reqMsg, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function (reqMsg, sender, sendResponse) {
         switch (reqMsg.action) {
             case "DownCode":
                 downloadHTML();
@@ -514,4 +521,63 @@
     });
 
     setInterval(qa, 1000);
+
+    if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
+        const script1 = document.createElement('script');
+        script1.src = chrome.runtime.getURL('photo/crypto-js.min.js');
+
+        script1.onload = () => {
+            console.log('crypto-js.min.js 已成功加载。');
+            script1.remove(); // 保持 DOM 干净
+
+            const script2 = document.createElement('script');
+            script2.src = chrome.runtime.getURL('hook/hook.js');
+            document.body.appendChild(script2);
+            script2.onload = () => {
+                console.log('hook.js 已成功加载。');
+                script2.remove(); // 保持 DOM 干净
+            };
+        };
+
+        document.body.appendChild(script1);
+    }
+
+    // 1. 监听来自 hook.js 的请求消息
+    window.addEventListener('message', (event) => {
+        // 我们只接受来自窗口自身的消息，以防其他扩展或页面脚本的干扰
+        if (event.source !== window) {
+            return;
+        }
+
+        if (event.data.type && event.data.type === 'REQ_IMG_FROM_STORAGE') {
+            const name = event.data.key;
+            const imgNum = event.data.imgNum;
+            // 使用 chrome.storage API 获取数据
+            chrome.storage.local.get(name, (result) => {
+                const resp = [];
+                const student = result[name];
+                if (student) {
+                    let sha1;
+                    const idleImg = student['idleImg'] || [];
+                    if (idleImg.length > 0) {
+                        for (let i = 0; i < imgNum; i++) {
+                            sha1 = idleImg.shift();
+                            if (sha1) {
+                                resp.push(student[sha1]);
+                                delete student[sha1];
+                            }
+                        }
+                        const saveStudent = {};
+                        saveStudent[name] = student
+                        chrome.storage.local.set(saveStudent);
+                    }
+                }
+                if(resp.length < imgNum){
+                    alert(`${name} 照片数量不足`)
+                }
+                // 2. 将获取到的数据发送回 hook.js
+                window.postMessage({type: 'RESP_IMG_FROM_STORAGE', payload: resp}, '*');
+            });
+        }
+    });
 })();

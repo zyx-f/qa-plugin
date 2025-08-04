@@ -176,6 +176,32 @@ function initializeDragAndDrop(sortableContainers) {
             w1 = null;
             h1 = null;
             console.log('拖动结束');
+
+            // 跟新顺序
+            let idleImg = [];
+            const photoArr = sortableContainer.querySelectorAll('.photo-item[data-sha1]');
+
+            for (let i = 0; i < photoArr.length; i++) {
+                let photoItem = photoArr[i];
+                idleImg.push(photoItem.dataset.sha1);
+            }
+
+            let name = sortableContainer.parentElement.parentElement.dataset.name;
+
+            chrome.storage.local.get(name, (result) => {
+                const student = result[name];
+                if (!student) {
+                    alert("该学员已删除！");
+                    return;
+                }
+                student.idleImg = idleImg;
+
+                const saveStudent = {};
+                saveStudent[name] = student;
+                chrome.storage.local.set(saveStudent, function () {
+                    console.log(`更新顺序成功:${name}`);
+                });
+            });
         });
 
         // 确保当前容器内的“增加照片”项不可拖动
@@ -267,6 +293,7 @@ function addNewPhotoToContainer(name, addPhotoItemElement, sha1, imgBase64, alt 
     const newPhotoItem = document.createElement('div');
     newPhotoItem.classList.add('photo-item');
     newPhotoItem.setAttribute('draggable', 'true'); // 确保新照片项是可拖动的
+    newPhotoItem.dataset.sha1 = sha1;
     newPhotoItem.innerHTML = `
             <img src="${imgBase64}" alt="${alt}" style="font-size: 80px;">
             <div class="photo-caption delete-btn">删除</div>
@@ -299,7 +326,7 @@ function addStudent(name) {
         `;
 
     newRow.innerHTML = `
-            <td class="name-cell">${name}<br/><button class="delete-user-btn"">删除</button></td>
+            <td class="name-cell">${name}<br/><button class="delete-student-btn"">删除</button></td>
             <td>
                 <div class="photos-container">
                     ${photosHtml}
@@ -310,8 +337,8 @@ function addStudent(name) {
     tableBody.appendChild(newRow); // 将新行添加到 DOM
 
     // 绑定删除事件
-    newRow.querySelector('.delete-user-btn').addEventListener('click', function () {
-        deleteUser(this.parentNode);
+    newRow.querySelector('.delete-student-btn').addEventListener('click', function () {
+        deleteStudent(newRow, name);
     });
 
     // 绑定拖拽事件
@@ -327,11 +354,7 @@ function addStudent(name) {
     }
 }
 
-
-/**
- * 主函数，由按钮点击等事件触发
- * @param {HTMLElement} newAddButton - 触发操作的按钮元素
- */
+// 添加照片
 function addPhoto(newAddButton) {
     const fileInput = document.getElementById('fileInput');
 
@@ -454,20 +477,23 @@ function resizeImage(file, width, height) {
 }
 
 // 删除学员
-function deleteUser(userItem) {
-    chrome.storage.local.get('names', ({names}) => {
-        let idx;
-        if (!names && (idx = names.indexOf(name)) < 0) {
-            return;
-        }
-        names.splice(idx, 1);
-        const obj = {};
-        obj['names'] = names;
-        chrome.storage.local.set(obj, function () {
-            chrome.storage.local.remove(names, function () {
+function deleteStudent(row, name) {
+    if (confirm(`确定删除学员“${name}”？`))
+        chrome.storage.local.get('names', ({names}) => {
+            let idx;
+            if (!names && (idx = names.indexOf(name)) < 0) {
+                return;
+            }
+            names.splice(idx, 1);
+            const obj = {};
+            obj['names'] = names;
+            chrome.storage.local.set(obj, function () {
+                chrome.storage.local.remove(name, function () {
+                    row.remove();
+                    console.log(`删除学员成功！`);
+                });
             });
         });
-    });
 }
 
 function addLocalPhoto(name) {
