@@ -5,9 +5,9 @@ async function setSnap(frame, name) {
     }
     let snapKey = CryptoJS.SHA1(snap.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap ' + snapKey);
-    if('46bc7c62a959b50c140841b84803d7bebf2832a1' === snapKey){
+    if ('46bc7c62a959b50c140841b84803d7bebf2832a1' === snapKey) {
         return;
-    }else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
+    } else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
         console.log(snap.toString());
         alert('snap 存在更新，请关闭网页！');
         return;
@@ -39,6 +39,7 @@ async function setSnap(frame, name) {
             let imgBase = 'data:image/gif;base64,' + Imagedata
             let blob = frame.dataURLtoFile(imgBase, 'image/jpeg');
             frame.submitPic(blob);
+            frame.canvas.style.border = '2px solid #00ff00';
         };
         console.log(window.frames.document.location.href + ' 注入 snap ！！！')
     }
@@ -51,9 +52,9 @@ async function setSnap1(frame, name) {
     }
     let snap1Key = CryptoJS.SHA1(snap1.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap1 ' + snap1Key);
-    if('516b357a7403a77528374df6b5c50d62af4130a9' === snap1Key){
+    if ('516b357a7403a77528374df6b5c50d62af4130a9' === snap1Key) {
         return;
-    }else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
+    } else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
         console.log(snap1.toString());
         alert('snap1 存在更新，请关闭网页！');
         return;
@@ -103,6 +104,7 @@ async function setSnap1(frame, name) {
             let blob1 = frame.dataURLtoFile(imgBase1, 'image/jpeg');
             frame.submitPic(blob1);
             frame.zp1 = 0;
+            canvas1.style.border = '2px solid #00ff00';
         }
         console.log(window.frames.document.location.href + ' 注入 snap1 ！！！')
     }
@@ -115,9 +117,9 @@ async function setSnap2(frame, name) {
     }
     let snap2Key = CryptoJS.SHA1(snap2.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap2 ' + snap2Key);
-    if('752f32184a86425759e23d45a3d2571d71d912d7' === snap2Key){
+    if ('752f32184a86425759e23d45a3d2571d71d912d7' === snap2Key) {
         return;
-    }else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
+    } else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
         console.log(snap2.toString());
         alert('snap2 存在更新，请关闭网页！');
         return;
@@ -166,6 +168,7 @@ async function setSnap2(frame, name) {
             let blob2 = frame.dataURLtoFile(imgBase2, 'image/jpeg');
             frame.submitPic(blob2);
             frame.zp2 = 0;
+            canvas2.style.border = '2px solid #00ff00';
         }
         console.log(window.frames.document.location.href + ' 注入 snap2 ！！！')
     }
@@ -173,21 +176,31 @@ async function setSnap2(frame, name) {
 }
 
 async function takePictures() {
-    const name = '123';
-    const frames = window.frames;
-    console.log(frames && frames.length > 0)
-    if (frames && frames.length > 0) {
-        for (let i = 0; i < frames.length; i++) {
-            let frame = frames[i];
-            // /ZXXX/RZPage
-            await setSnap(frame, name);
+    try {
+        const frames = window.frames;
+        if (frames && frames.length > 0) {
+            let name = document.querySelector('ul.layui-nav.top_menu li a cite').childNodes[0].nodeValue;
+            name = name ? name : '';
+            name = name.replaceAll('\n', '').trim()
+            if (!name) {
+                return;
+            }
+            console.log(`name=${name}`)
 
-            // /ZXXX/IndexCLASS
-            await setSnap1(frame, name);
+            for (let i = 0; i < frames.length; i++) {
+                let frame = frames[i];
+                // /ZXXX/RZPage
+                await setSnap(frame, name);
 
-            // /ZXXX/IndexCLASS
-            await setSnap2(frame, name);
+                // /ZXXX/IndexCLASS
+                await setSnap1(frame, name);
+
+                // /ZXXX/IndexCLASS
+                await setSnap2(frame, name);
+            }
         }
+    } catch (e) {
+        console.error(e)
     }
 }
 
@@ -209,6 +222,7 @@ function getStorageData(key, imgNum = 1) {
     });
 }
 
-(async () => {
-    takePictures()
+(async function runTask() {
+    await takePictures();
+    setTimeout(runTask, 1000); // 等待1秒后再次执行
 })();
