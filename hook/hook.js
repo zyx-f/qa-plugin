@@ -5,7 +5,7 @@ async function setSnap(frame, name) {
     }
     let snapKey = CryptoJS.SHA1(snap.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap ' + snapKey);
-    if ('46bc7c62a959b50c140841b84803d7bebf2832a1' === snapKey) {
+    if ('8059aa05694de9d94355167f80b5ce725473f55a' === snapKey) {
         return;
     } else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
         console.log(snap.toString());
@@ -52,7 +52,7 @@ async function setSnap1(frame, name) {
     }
     let snap1Key = CryptoJS.SHA1(snap1.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap1 ' + snap1Key);
-    if ('516b357a7403a77528374df6b5c50d62af4130a9' === snap1Key) {
+    if ('45b613fe80f85f4ea4ebb5a6c98c00c9b887d1b3' === snap1Key) {
         return;
     } else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
         console.log(snap1.toString());
@@ -117,7 +117,7 @@ async function setSnap2(frame, name) {
     }
     let snap2Key = CryptoJS.SHA1(snap2.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap2 ' + snap2Key);
-    if ('752f32184a86425759e23d45a3d2571d71d912d7' === snap2Key) {
+    if ('a5f24a0f73893306c9612c17b98dea50b428e186' === snap2Key) {
         return;
     } else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
         console.log(snap2.toString());
@@ -179,7 +179,15 @@ async function takePictures() {
     try {
         const frames = window.frames;
         if (frames && frames.length > 0) {
-            let name = document.querySelector('ul.layui-nav.top_menu li a cite').childNodes[0].nodeValue;
+            var cite = document.querySelector('ul.layui-nav.top_menu li a cite');
+            if(!cite){
+                return;
+            }
+            var nodes = cite.childNodes;
+            if(!nodes || nodes.length <= 0){
+                return;
+            }
+            let name = nodes[0].nodeValue;
             name = name ? name : '';
             name = name.replaceAll('\n', '').trim()
             if (!name) {
