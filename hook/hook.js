@@ -1,9 +1,15 @@
-async function getImgs(name) {
+async function getImgs(frame, name) {
     let imgs;
+    let pause = false;
     do {
         imgs = await getStorageData(name);
-        !(imgs && imgs.length > 0) && confirm(`请增加学员“${name}”的照片后点击确认`);
-    } while (imgs && imgs.length > 0)
+        if (!(imgs && imgs.length > 0)) {
+            frame.player && frame.player.pause();
+            confirm(`请增加学员“${name}”的照片后点击确认`);
+            pause = true;
+        }
+    } while (!(imgs && imgs.length > 0));
+    pause && frame.player && frame.player.play();
     return imgs;
 }
 
@@ -14,7 +20,7 @@ async function setSnap(frame, name) {
     }
     let snapKey = CryptoJS.SHA1(snap.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap ' + snapKey);
-    if ('8c1f2da98421aabb16ffbe81a30234ae1ce5875a' === snapKey) {
+    if ('628c8335485c8fbb1dd5a1ab48bdfe33ea4e98cd' === snapKey) {
         return;
     } else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
         console.log(snap.toString());
@@ -38,7 +44,7 @@ async function setSnap(frame, name) {
         document.body.appendChild(frame.canvas);
 
         // 获取学员照片
-        let imgs = await getImgs(name);
+        let imgs = await getImgs(frame, name);
 
         // 渲染图片
         const img = new Image();
@@ -63,10 +69,11 @@ async function setSnap1(frame, name) {
     }
     let snap1Key = CryptoJS.SHA1(snap1.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap1 ' + snap1Key);
-    if ('6d6903bd049d4093392daaa94e5fc9d4daa2192b' === snap1Key) {
+    if ('38fd99c98846ac2034bd260df3a21554138ad98d' === snap1Key) {
         return;
     } else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
         console.log(snap1.toString());
+        frame.player && frame.player.pause();
         alert('snap1 存在更新，请关闭网页！');
         return;
     }
@@ -103,7 +110,7 @@ async function setSnap1(frame, name) {
         canvas1.style.left = '';
 
         // 获取学员照片
-        let imgs1 = await getImgs(name);
+        let imgs1 = await getImgs(frame, name);
 
         // 渲染图片
         const img1 = new Image();
@@ -130,10 +137,11 @@ async function setSnap2(frame, name) {
     }
     let snap2Key = CryptoJS.SHA1(snap2.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap2 ' + snap2Key);
-    if ('6e0594bf73b44fd04fda4143970b9db563e0b295' === snap2Key) {
+    if ('91df657c009ff50305556f7d53e9083a34b13f48' === snap2Key) {
         return;
     } else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
         console.log(snap2.toString());
+        frame.player && frame.player.pause();
         alert('snap2 存在更新，请关闭网页！');
         return;
     }
@@ -170,7 +178,7 @@ async function setSnap2(frame, name) {
         canvas2.style.left = '';
 
         // 获取学员照片
-        let imgs2 = await getImgs(name);
+        let imgs2 = await getImgs(frame, name);
 
         // 渲染图片
         const img2 = new Image();
