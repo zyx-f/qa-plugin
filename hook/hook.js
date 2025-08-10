@@ -1,3 +1,12 @@
+async function getImgs(name) {
+    let imgs;
+    do {
+        imgs = await getStorageData(name);
+        !(imgs && imgs.length > 0) && confirm(`请增加学员“${name}”的照片后点击确认`);
+    } while (imgs && imgs.length > 0)
+    return imgs;
+}
+
 async function setSnap(frame, name) {
     let snap = frame.snap;
     if (!snap) {
@@ -5,7 +14,7 @@ async function setSnap(frame, name) {
     }
     let snapKey = CryptoJS.SHA1(snap.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap ' + snapKey);
-    if ('8059aa05694de9d94355167f80b5ce725473f55a' === snapKey) {
+    if ('8c1f2da98421aabb16ffbe81a30234ae1ce5875a' === snapKey) {
         return;
     } else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
         console.log(snap.toString());
@@ -19,30 +28,32 @@ async function setSnap(frame, name) {
     let blob = dataURLtoFile(imgBase, 'image/jpeg');
     submitPic(blob);
     */
-    // 显示canvas
-    frame.canvas.style.border = '2px solid red';
-    document.body.appendChild(frame.canvas);
 
-    let imgs = await getStorageData(name);
-    if (imgs && imgs.length > 0) {
+    // 设置函数
+    frame.snap = async function () {
+        console.log('execute snap！！！')
+
+        // 显示canvas
+        frame.canvas.style.border = '2px solid red';
+        document.body.appendChild(frame.canvas);
+
+        // 获取学员照片
+        let imgs = await getImgs(name);
+
         // 渲染图片
         const img = new Image();
         img.src = imgs[0]
         img.onload = function () {
             frame.ctx.drawImage(img, 0, 0, frame.width, frame.height);
         }
+        let Imagedata = imgs[0].substring(22);
+        let imgBase = 'data:image/gif;base64,' + Imagedata
+        let blob = frame.dataURLtoFile(imgBase, 'image/jpeg');
+        frame.submitPic(blob);
+        frame.canvas.style.border = '2px solid #00ff00';
+    };
+    console.log(window.frames.document.location.href + ' 注入 snap ！！！')
 
-        // 设置函数
-        frame.snap = function () {
-            console.log('execute snap！！！')
-            let Imagedata = imgs[0].substring(22);
-            let imgBase = 'data:image/gif;base64,' + Imagedata
-            let blob = frame.dataURLtoFile(imgBase, 'image/jpeg');
-            frame.submitPic(blob);
-            frame.canvas.style.border = '2px solid #00ff00';
-        };
-        console.log(window.frames.document.location.href + ' 注入 snap ！！！')
-    }
 }
 
 async function setSnap1(frame, name) {
@@ -52,7 +63,7 @@ async function setSnap1(frame, name) {
     }
     let snap1Key = CryptoJS.SHA1(snap1.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap1 ' + snap1Key);
-    if ('45b613fe80f85f4ea4ebb5a6c98c00c9b887d1b3' === snap1Key) {
+    if ('6d6903bd049d4093392daaa94e5fc9d4daa2192b' === snap1Key) {
         return;
     } else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
         console.log(snap1.toString());
@@ -76,19 +87,24 @@ async function setSnap1(frame, name) {
     zp1 = 0;
     */
 
-    let canvas1 = frame.document.getElementById('canvas1');
-    canvas1.setAttribute('width', frame.width);
-    canvas1.setAttribute('height', frame.height);
-    let ctx1 = canvas1.getContext('2d');
-    ctx1.clearRect(0, 0, frame.width, frame.height);
+    // 设置函数
+    frame.snap1 = async function () {
+        console.log('execute snap1！！！')
 
-    // 显示canvas
-    canvas1.style.border = '2px solid red';
-    canvas1.style.position = '';
-    canvas1.style.left = '';
+        let canvas1 = frame.document.getElementById('canvas1');
+        canvas1.setAttribute('width', frame.width);
+        canvas1.setAttribute('height', frame.height);
+        let ctx1 = canvas1.getContext('2d');
+        ctx1.clearRect(0, 0, frame.width, frame.height);
 
-    let imgs1 = await getStorageData(name);
-    if (imgs1 && imgs1.length > 0) {
+        // 显示canvas
+        canvas1.style.border = '2px solid red';
+        canvas1.style.position = '';
+        canvas1.style.left = '';
+
+        // 获取学员照片
+        let imgs1 = await getImgs(name);
+
         // 渲染图片
         const img1 = new Image();
         img1.src = imgs1[0]
@@ -96,18 +112,15 @@ async function setSnap1(frame, name) {
             ctx1.drawImage(img1, 0, 0, frame.width, frame.height);
         }
 
-        // 设置函数
-        frame.snap1 = function () {
-            console.log('execute snap1！！！')
-            let Imagedata1 = imgs1[0].substring(22);
-            let imgBase1 = 'data:image/gif;base64,' + Imagedata1
-            let blob1 = frame.dataURLtoFile(imgBase1, 'image/jpeg');
-            frame.submitPic(blob1);
-            frame.zp1 = 0;
-            canvas1.style.border = '2px solid #00ff00';
-        }
-        console.log(window.frames.document.location.href + ' 注入 snap1 ！！！')
+        let Imagedata1 = imgs1[0].substring(22);
+        let imgBase1 = 'data:image/gif;base64,' + Imagedata1
+        let blob1 = frame.dataURLtoFile(imgBase1, 'image/jpeg');
+        frame.submitPic(blob1);
+        frame.zp1 = 0;
+        canvas1.style.border = '2px solid #00ff00';
     }
+    console.log(window.frames.document.location.href + ' 注入 snap1 ！！！')
+
 }
 
 async function setSnap2(frame, name) {
@@ -117,7 +130,7 @@ async function setSnap2(frame, name) {
     }
     let snap2Key = CryptoJS.SHA1(snap2.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap2 ' + snap2Key);
-    if ('a5f24a0f73893306c9612c17b98dea50b428e186' === snap2Key) {
+    if ('6e0594bf73b44fd04fda4143970b9db563e0b295' === snap2Key) {
         return;
     } else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
         console.log(snap2.toString());
@@ -140,19 +153,25 @@ async function setSnap2(frame, name) {
     submitPic(blob2);
     zp2 = 0;
     */
-    let canvas2 = frame.document.getElementById('canvas2');
-    canvas2.setAttribute('width', frame.width);
-    canvas2.setAttribute('height', frame.height);
-    let ctx2 = canvas2.getContext('2d');
-    ctx2.clearRect(0, 0, frame.width, frame.height);
 
-    // 显示canvas
-    canvas2.style.border = '2px solid red';
-    canvas2.style.position = '';
-    canvas2.style.left = '';
+    // 设置函数
+    frame.snap2 = async function () {
+        console.log('execute snap2！！！')
 
-    let imgs2 = await getStorageData(name);
-    if (imgs2 && imgs2.length > 0) {
+        let canvas2 = frame.document.getElementById('canvas2');
+        canvas2.setAttribute('width', frame.width);
+        canvas2.setAttribute('height', frame.height);
+        let ctx2 = canvas2.getContext('2d');
+        ctx2.clearRect(0, 0, frame.width, frame.height);
+
+        // 显示canvas
+        canvas2.style.border = '2px solid red';
+        canvas2.style.position = '';
+        canvas2.style.left = '';
+
+        // 获取学员照片
+        let imgs2 = await getImgs(name);
+
         // 渲染图片
         const img2 = new Image();
         img2.src = imgs2[0]
@@ -160,18 +179,15 @@ async function setSnap2(frame, name) {
             ctx2.drawImage(img2, 0, 0, frame.width, frame.height);
         }
 
-        // 设置函数
-        frame.snap2 = function () {
-            console.log('execute snap2！！！')
-            let Imagedata2 = imgs2[0].substring(22);
-            let imgBase2 = 'data:image/gif;base64,' + Imagedata2
-            let blob2 = frame.dataURLtoFile(imgBase2, 'image/jpeg');
-            frame.submitPic(blob2);
-            frame.zp2 = 0;
-            canvas2.style.border = '2px solid #00ff00';
-        }
-        console.log(window.frames.document.location.href + ' 注入 snap2 ！！！')
+        let Imagedata2 = imgs2[0].substring(22);
+        let imgBase2 = 'data:image/gif;base64,' + Imagedata2
+        let blob2 = frame.dataURLtoFile(imgBase2, 'image/jpeg');
+        frame.submitPic(blob2);
+        frame.zp2 = 0;
+        canvas2.style.border = '2px solid #00ff00';
     }
+    console.log(window.frames.document.location.href + ' 注入 snap2 ！！！')
+
 
 }
 
@@ -180,11 +196,11 @@ async function takePictures() {
         const frames = window.frames;
         if (frames && frames.length > 0) {
             var cite = document.querySelector('ul.layui-nav.top_menu li a cite');
-            if(!cite){
+            if (!cite) {
                 return;
             }
             var nodes = cite.childNodes;
-            if(!nodes || nodes.length <= 0){
+            if (!nodes || nodes.length <= 0) {
                 return;
             }
             let name = nodes[0].nodeValue;

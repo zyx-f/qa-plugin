@@ -59,7 +59,24 @@
                     let layerCont = document.querySelector('.layui-layer .layui-layer-content');
                     if (layerCont && layerCont.textContent === '本节学习完成，请点击下一节课继续学习。') {
                         let but = document.querySelector('.layui-layer .layui-layer-btn0');
-                        but && but.click();
+                        if(but){
+                            let prevElement = but.previousElementSibling;
+                            if (!prevElement) {
+                                prevElement = document.createElement('span');
+                                prevElement.textContent = '240';
+                                prevElement.dataset.time = '240';
+                                but.insertAdjacentElement('beforebegin', prevElement);
+                            } else {
+                                let time = parseInt(prevElement.dataset.time);
+                                if( time <= 1){
+                                    but.click();
+                                }else{
+                                    time--;
+                                    prevElement.textContent = `${time}`;
+                                    prevElement.dataset.time = `${time}`;
+                                }
+                            }
+                        }
                     }
                 }
             });
