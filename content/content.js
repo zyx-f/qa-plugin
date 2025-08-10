@@ -559,11 +559,13 @@
                 if (student) {
                     let sha1;
                     const idleImg = student['idleImg'] || [];
+                    const useImg = student['useImg'] || [];
                     if (idleImg.length > 0) {
                         for (let i = 0; i < imgNum; i++) {
                             sha1 = idleImg.shift();
                             if (sha1) {
                                 resp.push(student[sha1]);
+                                useImg.push(sha1);
                                 delete student[sha1];
                             }
                         }
@@ -573,7 +575,7 @@
                     }
                 }
                 if(resp.length < imgNum){
-                    alert(`${name} 照片数量不足`)
+                    alert(`${name} 照片数量不足 ${imgNum}`)
                 }
                 // 2. 将获取到的数据发送回 hook.js
                 window.postMessage({type: 'RESP_IMG_FROM_STORAGE', payload: resp}, '*');

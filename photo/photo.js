@@ -410,10 +410,12 @@ async function processSingleFile(file, newAddButton) {
 
     const idleImg = student['idleImg'] || [];
     const useImg = student['useImg'] || [];
-    const imgs = idleImg.concat(useImg);
 
-    if (imgs.includes(sha1)) {
+    if (idleImg.includes(sha1)) {
         throw new Error(`照片 ${file.name} 已存在！`);
+    }
+    if (useImg.includes(sha1)) {
+        throw new Error(`照片 ${file.name} 已使用过！`);
     }
 
     idleImg.push(sha1);
@@ -481,7 +483,8 @@ function deleteStudent(row, name) {
     if (confirm(`确定删除学员“${name}”？`))
         chrome.storage.local.get('names', ({names}) => {
             let idx;
-            if (!names && (idx = names.indexOf(name)) < 0) {
+            if (!names || (idx = names.indexOf(name)) < 0) {
+                row.remove();
                 return;
             }
             names.splice(idx, 1);
