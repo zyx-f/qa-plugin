@@ -546,6 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addStudentButton) {
         addStudentButton.addEventListener('click', () => {
             let name = prompt("请输入新学员的名字：", "")
+            name = name.trim();
             if (name) {
                 chrome.storage.local.get('names', ({names}) => {
                     if (!names) {

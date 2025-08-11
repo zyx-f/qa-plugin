@@ -1,12 +1,23 @@
 async function getImgs(frame, name) {
     let imgs;
     let pause = false;
+    let fail = 0;
     do {
-        imgs = await getStorageData(name);
-        if (!(imgs && imgs.length > 0)) {
-            frame.player && frame.player.pause();
-            confirm(`请增加学员“${name}”的照片后点击确认`);
-            pause = true;
+        try {
+            imgs = await getStorageData(name);
+            if (!(imgs && imgs.length > 0)) {
+                frame.player && frame.player.pause();
+                confirm(`请增加学员“${name}”的照片后点击确认`);
+                pause = true;
+            }
+        }catch (e) {
+            fail++;
+            console.error(`${name} 获取照片失败 ${fail}次，失败原因：${e}`)
+            if(fail >= 3){
+                confirm(`${name} 获取照片失败 ${fail}次，如继续尝试请点击确认，若后续再失败每3次再提醒`);
+                frame.player && frame.player.pause();
+                pause = true;
+            }
         }
     } while (!(imgs && imgs.length > 0));
     pause && frame.player && frame.player.play();
