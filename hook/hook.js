@@ -31,7 +31,7 @@ async function setSnap(frame, name) {
     }
     let snapKey = CryptoJS.SHA1(snap.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap ' + snapKey);
-    if ('628c8335485c8fbb1dd5a1ab48bdfe33ea4e98cd' === snapKey) {
+    if ('5db5e4c56631f4ae9e0beccb5af8c838d0f2cf5d' === snapKey) {
         return;
     } else if ('901f518fb691dbf752d3ebbc71c20e08c21cca84' !== snapKey) {
         console.log(snap.toString());
@@ -80,7 +80,7 @@ async function setSnap1(frame, name) {
     }
     let snap1Key = CryptoJS.SHA1(snap1.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap1 ' + snap1Key);
-    if ('38fd99c98846ac2034bd260df3a21554138ad98d' === snap1Key) {
+    if ('baaa60f004021f10e32afd7fb3dc104e49f48f76' === snap1Key) {
         return;
     } else if ('fe69c8d9cff3ff279c61bc1f4fae6c273b55a8c7' !== snap1Key) {
         console.log(snap1.toString());
@@ -148,7 +148,7 @@ async function setSnap2(frame, name) {
     }
     let snap2Key = CryptoJS.SHA1(snap2.toString()).toString()
     console.log(window.frames.document.location.href + '有 snap2 ' + snap2Key);
-    if ('91df657c009ff50305556f7d53e9083a34b13f48' === snap2Key) {
+    if ('d701c9296046c965c2753db6c536b694a9413520' === snap2Key) {
         return;
     } else if ('ea3527a5ad126ad09ed7c08f523fd14c465a97aa' !== snap2Key) {
         console.log(snap2.toString());
