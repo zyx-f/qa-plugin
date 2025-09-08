@@ -35,16 +35,31 @@
             }
         }
 
-        // 确认按钮
-        videoClickBtnFun();
+        if(location.hostname === 'px.slagry.com' || location.hostname === 'localhost'){
+            // 确认按钮
+            videoClickBtnFun();
+        }
     }
 
     function videoClickBtnFun() {
         try {
             chrome.storage.local.get('videoBtn', ({videoBtn}) => {
-                if (videoBtn) {
-                    let but = document.querySelector('td div.ui_buttons input.ui_state_highlight');
-                    but && but.click();
+                let hook1 = document.getElementById('script-hook1');
+                if(hook1){
+                    hook1.dataset.flag = videoBtn;
+                }
+                if (videoBtn && !hook1) {
+                   const script1 = document.createElement('script');
+                   script1.src = chrome.runtime.getURL('hook/hook1.js');
+                   script1.id = 'script-hook1';
+                   script1.dataset.flag = videoBtn;
+
+                   script1.onload = () => {
+                       console.log('hook1.js 已成功加载。');
+                       // script1.remove(); // 保持 DOM 干净
+                   };
+
+                   document.body.appendChild(script1);
                 }
             });
         } catch (e) {
