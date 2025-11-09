@@ -1,1 +1,1 @@
-const hostArr = ['gzak.gzsjzyxh.cn','61.243.10.95'];
+const hostArr = ['gzak.gzsjzyxh.cn','61.243.10.95', 'localhost'];

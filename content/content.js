@@ -21,23 +21,22 @@
 
 
     function qa() {
-
-        if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
-            // 确认按钮
-            videoClickBtnFun2();
-        }
-
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
-            } else if (document.querySelectorAll('#jConfireSubmit').length > 0) {
+            } else if (document.querySelectorAll('#subject').length > 0) {
                 autoQa();
             }
         }
 
-        if(location.hostname === 'px.slagry.com' || location.hostname === 'localhost'){
+        if (location.hostname === 'px.slagry.com' || location.hostname === 'localhost') {
             // 确认按钮
             videoClickBtnFun();
+        }
+
+        if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
+            // 确认按钮
+            videoClickBtnFun2();
         }
     }
 
@@ -45,25 +44,25 @@
         try {
             chrome.storage.local.get('videoBtn', ({videoBtn}) => {
                 let hook1 = document.getElementById('script-hook1');
-                if(hook1){
+                if (hook1) {
                     hook1.dataset.flag = videoBtn;
                 }
                 if (videoBtn && !hook1) {
-                   const script1 = document.createElement('script');
-                   script1.src = chrome.runtime.getURL('hook/hook1.js');
-                   script1.id = 'script-hook1';
-                   script1.dataset.flag = videoBtn;
+                    const script1 = document.createElement('script');
+                    script1.src = chrome.runtime.getURL('hook/hook1.js');
+                    script1.id = 'script-hook1';
+                    script1.dataset.flag = videoBtn;
 
-                   script1.onload = () => {
-                       console.log('hook1.js 已成功加载。');
-                       // script1.remove(); // 保持 DOM 干净
-                   };
+                    script1.onload = () => {
+                        console.log('hook1.js 已成功加载。');
+                        // script1.remove(); // 保持 DOM 干净
+                    };
 
-                   document.body.appendChild(script1);
+                    document.body.appendChild(script1);
                 }
             });
         } catch (e) {
-            // console.error(e);
+            console.error(e);
         }
     }
 
@@ -98,7 +97,7 @@
             console.log('openAutoQq=' + openAutoQq);
             if (openAutoQq) {
                 var isOk;
-                var currQ = document.querySelector('.xuanzheti_ul .listsd[style=""]');
+                var currQ = document.querySelector('.subTitle .titleName');
                 try {
                     if (!currQ) {
                         // alert('未提取到当前题');
@@ -109,15 +108,17 @@
                         return;
                     }
                     var q, t, a;
-                    q = replacePunctuation(currQ.querySelector('div.dime p').textContent.trim().replace(/\s+/g, ""));
-                    t = currQ.parentNode.parentNode.querySelector('.xuanzheti_title').textContent.trim();
+                    q = replacePunctuation(currQ.textContent.trim().replace(/\s+/g, ""));
+                    t = document.querySelector('.subType .sl div').textContent.trim();
 
                     var aNodeMap = {};
-                    var ul = currQ.querySelector('ul.grsou_li.jQuesItem');
-                    var inputs = ul.querySelectorAll('li input');
-                    for (let i = 0; i < inputs.length; i++) {
-                        inputs[i].checked && inputs[i].click();
-                        aNodeMap[replacePunctuation(inputs[i].value.trim().replace(/\s+/g, ""))] = inputs[i];
+                    var opItems = document.querySelectorAll('.options .opItem');
+                    for (let i = 0; i < opItems.length; i++) {
+                        var imgSrc = opItems[i].querySelector('.sele img').getAttribute('src');
+                        if (imgSrc && imgSrc.endsWith('/sele.png')) {
+                            opItems[i].click();
+                        }
+                        aNodeMap[replacePunctuation(opItems[i].querySelector('.opAnswer').textContent.trim().substring(3).replace(/\s+/g, ""))] = opItems[i];
                     }
                     switch (t) {
                         case '单选题':
@@ -131,11 +132,6 @@
                             break;
                         case '是非题':
                             a = window.dataJudgedQa[q];
-                            // 原来的aNodeMap key 为 1，2 增加汉字的
-                            Object.values(aNodeMap).forEach(value => {
-                                aNodeMap[replacePunctuation(value.parentElement.textContent.replace(/\s+/g, ""))] = value;
-                            });
-
                             if (a && aNodeMap[a]) {
                                 !aNodeMap[a].checked && aNodeMap[a].click();
                             } else {
@@ -153,16 +149,8 @@
                                 console.log('发现异常符号：' + a);
                                 a = a.replaceAll('＆', '&');
                             }
-                            var ass = a.split('&');
-                            // for (var i in ass) {
-                            //     a = ass[i];
-                            //     if (a && aNodeMap[a]) {
-                            //         !aNodeMap[a].checked && aNodeMap[a].click();
-                            //     } else {
-                            //         alert('未找到选项：' + a);
-                            //     }
-                            // }
-                            var isClick = false;
+                            const ass = a.split('&');
+                            let isClick = false;
                             for (var key in aNodeMap) {
                                 // 检查当前aNodeMap的key是否存在于ass数组中
                                 if (ass.includes(key)) {
@@ -183,20 +171,8 @@
                             alert('未知题型：' + t);
                             return;
                     }
-                    var nqid = ul.dataset.nqid;
-                    if (nqid !== '0') {
-                        console.log('nqid=' + nqid);
-                        document.getElementById('nbtn').click();
-                    } else {
-                        const submitBtn = document.getElementById('submit_btn');
-                        if (submitBtn) {
-                            if (!(submitBtn.style.visibility === 'hidden' || submitBtn.style.display === 'none')) {
-                                submitBtn.click();
-                            }
-                        } else {
-                            alert('未找到提交按钮');
-                        }
-                    }
+                    const next = document.querySelector('.next');
+                    next && next.click();
                 } catch (e) {
                     console.error(e);
                     alert('自动QA功能异常');
@@ -450,6 +426,15 @@
         return htmlString; // 没找到 <body> 标签，返回原字符串
     }
 
+    chrome.runtime.onMessage.addListener(function (reqMsg, sender, sendResponse) {
+        switch (reqMsg.action) {
+            case "DownCode":
+                downloadHTML();
+                break;
+        }
+    });
+
+
     function downloadHTML() {
         // 获取完整的HTML
         var htmlContent = document.documentElement.outerHTML;
@@ -459,7 +444,6 @@
         var iframs = document.querySelectorAll('iframe');
 
         for (var i = 0; i < iframs.length; i++) {
-
             var ifram = iframs[i];
             if (ifram.contentDocument || ifram.contentWindow.document) {
 
@@ -477,7 +461,6 @@
                     htmlContent = htmlContent.replace(iframeStr, innerContent)
                     sccussNum++;
                     temp += 'success--------------------------------------------------------\n\n';
-
                 } else {
 
                     var parentHead = parentStr.substring(parentStr.indexOf('<'), parentStr.indexOf('<iframe') + '<iframe'.length + 1);
@@ -537,15 +520,6 @@
         }, 100);
     }
 
-    chrome.runtime.onMessage.addListener(function (reqMsg, sender, sendResponse) {
-        switch (reqMsg.action) {
-            case "DownCode":
-                downloadHTML();
-                break;
-        }
-    });
-
-    setInterval(qa, 1000);
 
     if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
         const script1 = document.createElement('script');
@@ -609,4 +583,6 @@
             });
         }
     });
+
+    setInterval(qa, 1000);
 })();
