@@ -98,18 +98,19 @@
             if (openAutoQq) {
                 var isOk;
                 var currQ = document.querySelector('.subTitle .titleName');
+                const typeDiv = document.querySelector('.subType .sl div');
                 try {
-                    if (!currQ) {
+                    if (!currQ || !typeDiv) {
                         // alert('未提取到当前题');
                         return;
                     }
-                    isOk = !!currQ.dataset.isOk;
+                    isOk = !!typeDiv.dataset.isOk;
                     if (isOk) {
                         return;
                     }
                     var q, t, a;
                     q = replacePunctuation(currQ.textContent.trim().replace(/\s+/g, ""));
-                    t = document.querySelector('.subType .sl div').textContent.trim();
+                    t = typeDiv.textContent.trim();
 
                     var aNodeMap = {};
                     var opItems = document.querySelectorAll('.options .opItem');
@@ -118,7 +119,14 @@
                         if (imgSrc && imgSrc.endsWith('/sele.png')) {
                             opItems[i].click();
                         }
-                        aNodeMap[replacePunctuation(opItems[i].querySelector('.opAnswer').textContent.trim().substring(3).replace(/\s+/g, ""))] = opItems[i];
+                        let answer = opItems[i].querySelector('.opAnswer').textContent.trim();
+                        if(t!=='判断题' ){
+                            let idx = answer.indexOf('. ');
+                            if(idx !== -1){
+                                answer = answer.substring(idx + 2);
+                            }
+                        }
+                        aNodeMap[replacePunctuation(answer.replace(/\s+/g, ""))] = opItems[i];
                     }
                     switch (t) {
                         case '单选题':
@@ -130,7 +138,7 @@
                                 return;
                             }
                             break;
-                        case '是非题':
+                        case '判断题':
                             a = window.dataJudgedQa[q];
                             if (a && aNodeMap[a]) {
                                 !aNodeMap[a].checked && aNodeMap[a].click();
@@ -177,8 +185,8 @@
                     console.error(e);
                     alert('自动QA功能异常');
                 } finally {
-                    if (currQ && !isOk) {
-                        currQ.dataset.isOk = 'true';
+                    if (typeDiv && !isOk) {
+                        typeDiv.dataset.isOk = 'true';
                     }
                 }
             }
