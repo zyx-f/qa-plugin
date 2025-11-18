@@ -529,23 +529,34 @@
     }
 
 
+    // if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
+    //     const script1 = document.createElement('script');
+    //     script1.src = chrome.runtime.getURL('photo/crypto-js.min.js');
+    //
+    //     script1.onload = () => {
+    //         console.log('crypto-js.min.js 已成功加载。');
+    //         script1.remove(); // 保持 DOM 干净
+    //
+    //         const script2 = document.createElement('script');
+    //         script2.src = chrome.runtime.getURL('hook/hook.js');
+    //         document.body.appendChild(script2);
+    //         script2.onload = () => {
+    //             console.log('hook.js 已成功加载。');
+    //             script2.remove(); // 保持 DOM 干净
+    //         };
+    //     };
+    //
+    //     document.body.appendChild(script1);
+    // }
+
     if (location.hostname === 'cms.slyb.top' || location.hostname === 'localhost') {
         const script1 = document.createElement('script');
-        script1.src = chrome.runtime.getURL('photo/crypto-js.min.js');
+        script1.src = chrome.runtime.getURL('hook/hook2.js');
 
         script1.onload = () => {
-            console.log('crypto-js.min.js 已成功加载。');
+            console.log('hook2.js 已成功加载。');
             script1.remove(); // 保持 DOM 干净
-
-            const script2 = document.createElement('script');
-            script2.src = chrome.runtime.getURL('hook/hook.js');
-            document.body.appendChild(script2);
-            script2.onload = () => {
-                console.log('hook.js 已成功加载。');
-                script2.remove(); // 保持 DOM 干净
-            };
         };
-
         document.body.appendChild(script1);
     }
 

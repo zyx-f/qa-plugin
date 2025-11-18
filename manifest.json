@@ -51,6 +51,7 @@
         "override.js",
         "hook/hook.js",
         "hook/hook1.js",
+        "hook/hook2.js",
         "photo/crypto-js.min.js"
       ],
       "matches": [
