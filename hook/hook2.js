@@ -38,6 +38,10 @@ function generateRandomSixDecimal() {
     return randomNumber / 1000000;
 }
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function addBut() {
     try {
         let box = null;
@@ -72,9 +76,17 @@ async function addBut() {
                 }, 1000);
 
                 // 点击事件
-                but.onclick = function () {
+                but.onclick = async function () {
                     if (frame.bsave && frame.learnmodelobj == null && frame.player.time() <= 60) {
                         frame.saveclassTime(frame.currzj, 60 + generateRandomSixDecimal());
+
+                        // 等待结果
+                        let num = 0;
+                        do {
+                            await delay(30);
+                            num++;
+                        } while (num < 50 && !frame.learnmodelobj);
+
                     }
                     if (!frame.learnmodelobj) {
                         alert('learnmodelobj为空');
@@ -101,15 +113,15 @@ async function addBut() {
                         atim = frame.zp1;
                         frame.saveclassTime(frame.currzj, frame.zp1 + generateRandomSixDecimal());
                         frame.zp1 = 0;
-                        frame.zp2 = 0;
-                        home.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
+                        // layer.open 弹窗是在调用的frame
+                        frame.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
                     } else if (frame.zp2 > 0) {
                         atim = frame.zp2;
                         frame.saveclassTime(frame.currzj, frame.zp2 + generateRandomSixDecimal());
-                        frame.zp1 = 0;
                         frame.zp2 = 0;
-                        home.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
-                    }else{
+                        // layer.open 弹窗是在调用的frame
+                        frame.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
+                    } else {
                         alert('没有弹窗条件');
                     }
                 }

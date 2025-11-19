@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache,must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <link href="/Scripts/Layui/css/layui.css" rel="stylesheet"/>
+<link href="/Content/css/main.css" rel="stylesheet"/>
+<link href="/Scripts/Layui/icon/icon.css" rel="stylesheet"/>
+
+    <link href="/Scripts/ZXXX/css/demo.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-3.5.1.min.js"></script>
+    <script src="/Scripts/ZXXX/js/menu_min.js"></script>
+    <script src="/Scripts/Layui/layui.all.js"></script>
+    <script src="/Scripts/hyrc.js"></script>
+    <link rel="stylesheet" type="text/css" href="/plugins/ckplayerX3/ckplayer/css/ckplayer.css" /> 
+    <script type="text/javascript" charset="utf-8" src="/plugins/ckplayerX3/ckplayer/js/ckplayerX3.js"></script> 
+    <script src="/Scripts/weixin.js"></script>
+    <script type="text/javascript">
+        $(function () {          
+          
+            $("#mulubtn").click(function () {
+                $("#video").width(videowidth)
+                $("#mulubtn").hide();
+                $("#mulusq").show();
+                $(".menucons").show(200);
+                $("#consmulu").show();
+                $("#jysq").hide();
+                $("#jybtn").show();
+                $("#gssq").hide();
+                $("#gsbtn").show();
+                $("#consgs").hide();
+                $("#consjy").hide();
+                $("#teach").show();
+                $("#teachsq").hide();
+                $("#consteach").hide();
+            });
+            $("#mulusq").click(function () {
+                $("#video").width($(window).width());
+                $("#mulubtn").show();
+                $("#mulusq").hide();
+                $(".menucons").hide(200);
+            });
+            $("#jybtn").click(function () {
+                $("#video").width(videowidth)
+                $("#mulusq").hide();
+                $("#mulubtn").show();
+                $("#jybtn").hide();
+                $("#jysq").show();
+                $(".menucons").show(200);
+                $("#consmulu").hide();
+                $("#consjy").show();
+                $("#gssq").hide();
+                $("#gsbtn").show();
+                $("#consgs").hide();
+                $("#teach").show();
+                $("#teachsq").hide();
+                $("#consteach").hide();
+            });
+            $("#jysq").click(function () {
+                $("#video").width($(window).width());
+                $("#jybtn").show();
+                $("#jysq").hide();
+                $(".menucons").hide(200);
+            });
+            $("#gsbtn").click(function () {
+                $("#video").width(videowidth)
+                $("#gsbtn").hide();
+                $("#gssq").show();
+                $(".menucons").show(200);
+                $("#consmulu").hide();
+                $("#consjy").hide();
+                $("#consgs").show();
+                $("#mulubtn").show();
+                $("#mulusq").hide();
+                $("#jysq").hide();
+                $("#jybtn").show();
+                $("#teach").show();
+                $("#teachsq").hide();
+                $("#consteach").hide();
+            });
+            $("#gssq").click(function () {
+                $("#video").width($(window).width());
+                $("#gsbtn").show();
+                $("#gssq").hide();
+                $(".menucons").hide(200);
+            });
+            $("#teach").click(function () {
+                $("#video").width(videowidth)
+                $("#teach").hide();
+                $("#teachsq").show();
+                $(".menucons").show(200);
+                $("#consteach").show();
+                $("#gsbtn").show();
+                $("#gssq").hide();
+                $("#consgs").hide();
+                $("#mulubtn").show();
+                $("#consmulu").hide();
+                $("#mulusq").hide();
+                $("#jybtn").show();
+                $("#jysq").hide();
+                $("#consjy").hide();
+            });
+            $("#teachsq").click(function () {
+                $("#video").width($(window).width());
+                $("#teach").show();
+                $("#teachsq").hide();
+                $(".menucons").hide(200);
+            });
+
+            $("#fhbtn").click(function () {
+                 window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+            });         
+            $(".menu ul li").menu();
+            var youwidth = $(window).width();
+            var menuconswidth = youwidth / 4;
+            var videowidth = ($(window).width() - youwidth / 4);          
+        });
+    </script>
+    <style>
+        .tsmin {
+            position: absolute;
+            z-index: 999;
+            background-color: aqua;
+            height: 38px;
+            line-height: 38px;
+            color: red;
+            padding-left: 100px;
+        }
+
+        .teacherintro img {
+            max-width: 98%;
+        }
+        .teacherintro span {
+            line-height: 26px
+        }
+        .videoMain { 
+           position: static;  
+        }
+        .dm {
+            left: 100%;
+            bottom: 150px;
+            color: #FFF;
+            font-size: 18px;
+            line-height: 50px;
+            background-color: rgba(244, 67, 54, 0.9);
+            border-radius: 25px;
+            padding: 0 30px;
+            width: auto;
+            cursor: pointer;
+            display: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+    </style>
+</head>
+<body> 
+    <div class="videoMain"> 
+        <div class="videobox pr" id="videobox">
+            <div class="video" id="video" style="width:100%;height:100%;"></div>
+        </div>
+        <!-- #endregion -->
+        <!-- #region 各类按钮 -->
+        <div class="courseBox">
+            <div class="menutabs">
+                <ul>
+                    <li>
+                        <a href="javascript:void(0)" id="gsbtn" class="tabsbtn"><i class="cl gs"></i><span>概述</span></a>
+                        <a href="javascript:void(0)" style="display:none;" class="tabsbtn on" id="gssq"><div><i class="cl back"></i></div><span>收起</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" id="mulubtn" class="tabsbtn" style="height:64px;display:none ;"><i class="cl ml"></i><span>课程<br />目录</span></a>
+                        <a href="javascript:void(0)" style="" class="tabsbtn on" id="mulusq"><i class="cl back"></i><span>收起</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" id="jybtn" class="tabsbtn" style="height:64px;"><i class="cl jy"></i><span>课件<br />内容</span></a>
+                        <a href="javascript:void(0)" style="display:none;" class="tabsbtn on" id="jysq"><i class="cl back"></i><span>收起</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" id="teach" class="tabsbtn" style="height:64px;"><i class="cl teach"></i><span>老师<br />简介</span></a>
+                        <a href="javascript:void(0)" style="display:none;" class="tabsbtn on" id="teachsq"><i class="cl back"></i><span>收起</span></a>
+                    </li>  
+                    <li>
+                        <a href="javascript:void(0)" id="qiehuan" class="tabsbtn"><i class="cl qh" style="display:none"></i><span>三分屏</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" id="fhbtn" class="tabsbtn"><i class="cl fh"></i><span>返回</span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="menucons" style="">
+                <div class="conspartgs" id="consgs" style="display:none ;">
+                    <p class="kcgscs">课程概述</p>
+                    <div class="scolldiv">
+                        <div class="teacherintro">
+                            <p><p>资料员：从事施工资料的收集、整理、保管、归档、移交等工作的人员。</p><p><span style="color: rgb(51, 51, 51);"><br/></span></p><p><span style="color: rgb(51, 51, 51);">岗位知识:</span></p><ul style="padding: 0px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);" class=" list-paddingleft-2"><li><p>（1）掌握与本岗位相关的技术标准和管理规定</p></li><li><p>（2）掌握工程资料验收、备案管理知识</p></li><li><p>（3）掌握资料安全管理知识</p></li></ul><p><br/></p></p>
+                        </div>
+                    </div>
+                </div>
+                <!--目录-->
+                <div class="conspartmulu" id="consmulu">
+                    <p class="kcgscs">课程目录</p>
+                    <div class="scolldiv">
+                        <div class="catalog">
+                            <div class="menu">
+                                    <ul style="display: block;">
+                                            <li>
+                                                <a id="atextD36E484FAF4D45D2" class="clname" data-clname="第一讲" style="cursor:pointer" onclick="changeVideo('D36E484FAF4D45D2',  'https://slsp.slyb.top/sv/5f6abc11-175100c708e/5f6abc11-175100c708e.mp4','', '')">
+                                                    第一讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">40分钟</span>
+                                                <span id="spanD36E484FAF4D45D2" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atextE72A2F36C7330D78" class="clname" data-clname="第二讲" style="cursor:pointer" onclick="changeVideo('E72A2F36C7330D78',  'https://slsp.slyb.top/sv/289ac620-175100da537/289ac620-175100da537.mp4','', '')">
+                                                    第二讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">40分钟</span>
+                                                <span id="spanE72A2F36C7330D78" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext665B7C875603444E" class="clname" data-clname="第三讲" style="cursor:pointer" onclick="changeVideo('665B7C875603444E',  'https://slsp.slyb.top/sv/302bb06a-175100ed55a/302bb06a-175100ed55a.mp4','', '')">
+                                                    第三讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">39分钟</span>
+                                                <span id="span665B7C875603444E" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atextC4586A72D3750DAA" class="clname" data-clname="第四讲" style="cursor:pointer" onclick="changeVideo('C4586A72D3750DAA',  'https://slsp.slyb.top/sv/4c9b888-1751010514b/4c9b888-1751010514b.mp4','', '')">
+                                                    第四讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">21分钟</span>
+                                                <span id="spanC4586A72D3750DAA" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext3104B6CFF9BF2CEB" class="clname" data-clname="第五讲" style="cursor:pointer" onclick="changeVideo('3104B6CFF9BF2CEB',  'https://slsp.slyb.top/sv/1273533a-17510118240/1273533a-17510118240.mp4','', '')">
+                                                    第五讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">39分钟</span>
+                                                <span id="span3104B6CFF9BF2CEB" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext39BD5F411312E3BF" class="clname" data-clname="第六讲" style="cursor:pointer" onclick="changeVideo('39BD5F411312E3BF',  'https://slsp.slyb.top/sv/33e9c8f-17510129c21/33e9c8f-17510129c21.mp4','', '')">
+                                                    第六讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">42分钟</span>
+                                                <span id="span39BD5F411312E3BF" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atextB0919F583455768B" class="clname" data-clname="第七讲" style="cursor:pointer" onclick="changeVideo('B0919F583455768B',  'https://slsp.slyb.top/sv/41e4b78a-1751013b814/41e4b78a-1751013b814.mp4','', '')">
+                                                    第七讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">42分钟</span>
+                                                <span id="spanB0919F583455768B" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext7C1CA4AAD96C39B0" class="clname" data-clname="第八讲" style="cursor:pointer" onclick="changeVideo('7C1CA4AAD96C39B0',  'https://slsp.slyb.top/sv/7bb5bc4-1751014dec5/7bb5bc4-1751014dec5.mp4','', '')">
+                                                    第八讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">39分钟</span>
+                                                <span id="span7C1CA4AAD96C39B0" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext2D0547802D79C893" class="clname" data-clname="第九讲" style="cursor:pointer" onclick="changeVideo('2D0547802D79C893',  'https://slsp.slyb.top/sv/1304537c-17510161442/1304537c-17510161442.mp4','', '')">
+                                                    第九讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">39分钟</span>
+                                                <span id="span2D0547802D79C893" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext4ED705530465CAEF" class="clname" data-clname="第十讲" style="cursor:pointer" onclick="changeVideo('4ED705530465CAEF',  'https://slsp.slyb.top/sv/5990242-17510176ee3/5990242-17510176ee3.mp4','', '')">
+                                                    第十讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">40分钟</span>
+                                                <span id="span4ED705530465CAEF" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atext8B34B537D4F25E91" class="clname" data-clname="第十一讲" style="cursor:pointer" onclick="changeVideo('8B34B537D4F25E91',  'https://slsp.slyb.top/sv/2c8d1e6e-175101897b1/2c8d1e6e-175101897b1.mp4','', '')">
+                                                    第十一讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">43分钟</span>
+                                                <span id="span8B34B537D4F25E91" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                            <li>
+                                                <a id="atextDDC82B33969710B3" class="clname" data-clname="第十二讲" style="cursor:pointer" onclick="changeVideo('DDC82B33969710B3',  'https://slsp.slyb.top/sv/2a6a0797-1751019ec91/2a6a0797-1751019ec91.mp4','', '')">
+                                                    第十二讲
+                                                </a>
+                                                <span style="position:absolute;right:60px;top:14px;">24分钟</span>
+                                                <span id="spanDDC82B33969710B3" style="color:#e20404;position:absolute;right:10px;top:14px;">未学习</span>
+                                            </li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="conspartjy" id="consjy" style="display:none;">
+                    <p class="kcgscs">课件内容</p>
+                    <div class="scolldiv">
+                        <div class="jiangyicon" id="jiangyicon">
+                            <div id="pdfContainer" style="display:none">
+                            </div>
+                            <iframe id="frmpdf" width="100%" height="634px"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="conspartjy" id="consteach" style="display:none;">
+                    <p class="kcgscs">老师简介</p>
+                    <div class="scolldiv">
+                        <div class="teacherintro">
+                                <p><p><span style=";font-family:仿宋_GB2312;font-size:21px">公司技术人员，高级工程师，一级注册建造师（水利水电、房屋建筑），水利监理工程师，水利造价工程师。多年从事水利水电质检员、安全员培训授课，主编出版了《中小型水利水电工程施工管理实物》、《电气设备安装调试工》等多部教材。主要从事工程施工、安全质量管理等工作。</span></p><p><br/></p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- #endregion -->
+    </div>
+     
+    <script>
+        var bsave = true;
+        var currzj = 'D36E484FAF4D45D2';
+        var pageyema = 1;
+        var pdffile='';
+        var keybingfa = 0;
+        var VIDEOANDPDFPAGE = "";
+        var learnmodelobj = null;
+        var player = null;
+        var zongshijian = 0;
+        var imgcount = 0;
+        var zp1 =645;
+        var zp2 = 1371;
+        function loadPDF(fileURL) {
+            if (fileURL != '') {
+                var pdffiles = fileURL + "#toolbar=0";
+                 $("#frmpdf", parent.document.body).attr("src", pdffiles);
+            }
+        }
+
+        function GETlearn(szjid) {
+            $.ajax({
+                url: "/ZXXX/GETlearnmodel_QZ?zjid=" +szjid+"&token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584",
+                type: "get",
+                async: false,
+                success: function (obj) {
+                    learnmodelobj = JSON.parse(obj.ret);
+                    imgcount = parseInt(obj.imgcount);
+                }
+            })
+        }
+        function saveclassTime(zjid,timenum) {
+            if (bsave) {
+                var atim = parseInt('' + timenum);
+                if (atim>59 && (atim == 60 || atim % 300 == 0 || zongshijian <= timenum)) {
+                    $.ajax({
+                        url: "/ZXXX/saveTimeStudy_webchat",
+                        type: "post",
+                        data: { zjid: zjid, token:'CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584',timenum: timenum},
+                        async: true,
+                        success: function (obj) {
+                            if (obj.ret != 0) {
+                                if (obj.ret == 1) {
+                                    bsave = false;
+                                    player.pause();
+                                    top.layer.alert("本节学习完成，请点击下一节课继续学习。", { title: '温馨提示', icon: 6, closeBtn: 0 }, function (index) {
+                                        top.layer.close(index);
+                                        window.location.href = '/ZXXX/IndexCLASSTest?token=67CD528E1E8F8A16759618EB63FC0DD3';
+                                    })
+                                }
+                                else if (obj.ret == -1 || obj.ret == -2 || obj.ret == -3) {
+                                    bsave = false;
+                                    player.pause();
+                                    learnmodelobj = null;
+                                    top.layer.alert(obj.msg, { title: '温馨提示', icon: 2, closeBtn: 0 }, function (index) {
+                                        top.layer.close(index);
+                                        window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                                    })
+                                }
+                                else {
+                                    learnmodelobj = JSON.parse(obj.ret);
+                                    if (learnmodelobj.PLAYOVER == 2) {
+                                        bsave = false;
+                                        player.pause();
+                                        learnmodelobj = null;
+                                        top.layer.alert("本讲课程两次微信验证均未通过，请重新学习。", { title: '温馨提示', icon: 2, closeBtn: 0 }, function (index) {
+                                            top.layer.close(index);
+                                            window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                                        })
+                                    }
+                                    else if (obj.xuexiover == 1) {
+                                        bsave = false;
+                                        learnmodelobj = null;
+                                        top.layer.alert("您已学完请返回到报名页面参加考试。", { title: '温馨提示', icon: 6, closeBtn: 0 }, function (index) {
+                                            top.layer.close(index);
+                                            window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                                        })
+                                    }
+                                    else if (learnmodelobj.PLAYOVER ==1) {
+                                        bsave = false;
+                                        player.pause();
+                                        learnmodelobj = null;
+                                        top.layer.alert("本节学习完成，请点击下一节课继续学习。", { title: '温馨提示', icon: 6, closeBtn: 0 }, function (index) {
+                                            top.layer.close(index);
+                                            window.location.href = '/ZXXX/IndexCLASSTest?token=67CD528E1E8F8A16759618EB63FC0DD3';
+                                        })
+                                    }
+                                    else {
+                                        gengxinxuexizt(zjid);
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    return false;
+                }
+            }
+        }
+
+        function changeVideo(zjid, videoUrl, urlPre,videoandpdfpage) {
+            var xuexiOK = false;
+            $.ajax({
+                url: "/ZXXX/bXUEXIOK_QZ?zjid=" + zjid + "&token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584",
+                type: "get",
+                async: false,
+                success: function (obj) {
+                    var ret = JSON.parse(obj);
+                    if (ret.code == 0) {
+                        xuexiOK = false;
+                        layer.msg("请先学习" + ret.data);
+                    }
+                    else {
+                        xuexiOK = true;
+                    }
+                }
+            })
+            if (xuexiOK) {
+                VIDEOANDPDFPAGE = videoandpdfpage;
+                var xuanze = $("a[id^=atext]");
+                for (var j = 0, len = xuanze.length; j < len; j++) {
+                    $("#" + xuanze[j].id).css("color", "rgb(130, 132, 111)");
+                }
+                $("#atext" + zjid).css("color", "#3582c4")
+                if (urlPre != '') {
+                    loadPDF(urlPre)
+                }
+                currzj = zjid;
+                GETlearn(currzj);
+                var seek = 0;
+                if (learnmodelobj != null) {
+                    if (learnmodelobj != null) {
+                        if (learnmodelobj.PLAYOVER != 1) {
+                            var time = learnmodelobj.TIMES;
+                            seek = parseInt(time);
+                        }
+                    }
+                }
+                if (player) {
+                    player.remove();
+                }
+                var newVideoObject = {
+                    container: '#video',
+                    variable: 'player',
+                    video: videoUrl,
+                    flashplayer: false,
+                    autoplay: true,
+                    logo: '',
+                    seek: seek,
+                    playbackrateOpen: false
+                }
+                player = new ckplayer(newVideoObject);
+                player.duration(function (duration) {
+                    zongshijian = duration;
+                    if (learnmodelobj != null) {
+                        if (learnmodelobj.PLAYOVER != 1) {
+                            if (imgcount == 1) {
+                                zp1 = 0;
+                            } else if (imgcount >= 2) {
+                                zp1 = 0; zp2 = 0;
+                            }
+                        }
+                    }
+                });
+                player.time(function (time) {
+                    if (bsave) {
+                        if (learnmodelobj == null) {
+                            saveclassTime(currzj, time)
+                        }
+                        else {
+                            if (learnmodelobj.PLAYOVER != 1) {
+                                saveclassTime(currzj, time);
+                                var atim = parseInt('' + time);
+                                if (time >= zp1 && time < zp1 + 5 && zp1 > 0) {
+                                    player.pause();
+                                    zp1 = 0;
+                                    popwxstudy(atim.toString() + "|" + learnmodelobj.ID.toString() + "|CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584");
+                                }
+                                if (time >= zp2 && time < zp2 + 5 && zp2 > 0) {
+                                    player.pause();
+                                    zp2 = 0;
+                                    popwxstudy(atim.toString() + "|" + learnmodelobj.ID.toString() + "|CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584");
+                                }
+                            }
+                        }
+                    }
+                });
+
+                player.ended(function () {
+                    if (learnmodelobj != null && learnmodelobj.PLAYOVER != 1) {
+                        if (bsave) {
+                            saveclassTime(currzj, zongshijian);
+                            bsave = false;
+                        }
+                    }
+                });
+                gengxinxuexizt(zjid);
+                setTimeout("timer = setInterval('newDanmu()', 300000);", "10000");
+            }
+        }
+
+        $(document).ready(function () {
+            $(document).on("contextmenu", function (e) {
+                return false;
+            });
+            if (isMobile()) {
+                layer.alert("不支持手机、微信网页、苹果系统、平板电脑等学习方式", { title: '温馨提示', icon: 2, closeBtn: 0 }, function (index) {
+                    window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                    layer.close(index);
+                })
+            }
+            else {
+                success();
+            }
+        });
+
+        function success() {
+                       
+                       changeVideo('D36E484FAF4D45D2', 'https://slsp.slyb.top/sv/5f6abc11-175100c708e/5f6abc11-175100c708e.mp4', '', '');
+                       
+            var youwidth = $(window).width();
+            $(".menucons").width(youwidth / 4);
+            $("#video").width(($(window).width() - youwidth / 4));
+            $('.clname').on('mouseover', function () {
+                var clname = jQuery(this).data("clname");
+                if (clname.length > 16) {
+                    layer.tips(clname, this, {
+                        tips: [1, '#78BA32']
+                    });
+                }
+            });
+        }
+
+        function gengxinxuexizt(sjzjid) {
+            $.ajax({
+                url: "/ZXXX/GETlearnList_QZ?zjid=" + sjzjid+"&token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584",
+                type: "get",
+                async: true,
+                success: function (obj) {
+                    var ret = JSON.parse(obj.ret);
+                    for (var i = 0; i < ret.length; i++) {
+                        if (ret[i].PLAYOVER == 1) {
+                            $("#span" + ret[i].BZ).text("已完成")
+                            $("#span" + ret[i].BZ).css("color", "#09ab07")
+                        }
+                        else if (ret[i].PLAYOVER == 0) {
+                            $("#span" + ret[i].BZ).text("学习中");
+                            $("#span" + ret[i].BZ).css("color", "#b57008")
+                        } else {
+                            $("#span" + ret[i].BZ).text("未学习");
+                            $("#span" + ret[i].BZ).css("color", "#e20404")
+                        }
+                    }
+                }
+            });
+        }
+        function newDanmu() {
+            var ele = player.layer({//新建一个元件，附值给变量ele
+                class: 'dm',//弹幕的样式
+                content: "1.如听课过程中需中途离开，请点击暂停按钮，课程暂停播放后系统不进行微信随机验证；2、因学习和考试全过程采取微信随机验证方式，请您确保手机就近放置。"
+            });
+            //animate-缓动函数
+            ele.animate('left:' + (-ele.getWidth() + 'px'), 60000, '', function () {
+                ele.remove();//从页面中删除元件
+            });
+            //鼠标经过该元件时暂停缓动
+            ele.mouseover(function () {
+                this.animatePause();
+            });
+            //鼠标离开该元件时继续缓动
+            ele.mouseout(function () {
+                this.animatePlay();
+            });
+        }
+
+        window.onkeydown = window.onkeyup = window.onkeypress = function (event) {
+            if (event.keyCode == 123 || event.keyCode == 37 || event.keyCode == 39) {
+                event.preventDefault();
+                window.event.returnValue = false;
+            }
+        }
+        $(function () {
+            var interval = setInterval(function () {
+                $.ajax({
+                    type: "post",
+                    url: '/General/CheckstudyOrWeChat',
+                    datatype: "json",
+                    data: { formid: '1763173687881' },
+                    success: function (res) {
+                        if (res.code == 1) {
+                            clearInterval(interval);
+                            player.pause();
+                            window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                        }
+                        else if (res.code == 2) {
+                            layer.alert("系统检测您尚未绑定微信，请退出后先绑定微信再次学习", { icon: 5, closeBtn: 0 }, function (index) {
+                                clearInterval(interval);
+                                parent.layer.closeAll();
+                                player.pause();
+                                window.location.href = '/ZXXX/Index?token=CB33334C58EC0DC37DC12C7BFC9581C92C15D4ECA6A1AD8525B549784C8843DF176C9FA536AEC7247E1E34F175FCF9C60F44771BB3AAC584';
+                            });
+                        }
+                    }
+                });
+            }, 10000);
+        })
+    </script>
+</body>
+</html>
