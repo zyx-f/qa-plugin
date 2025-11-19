@@ -1,143 +1,289 @@
-function getFrameObj() {
-    const frameObj = {};
-    const frames = window.frames;
-    if (frames && frames.length > 0) {
-        for (let i = 0; i < frames.length; i++) {
-            let frame = frames[i];
-            if (frame.popwxstudy && frame.document.location.href.startsWith('https://cms.slyb.top/Home/PerHome')) {
-                frameObj.home = frame;
-            }
-            if (frame.document.location.href.startsWith('https://cms.slyb.top/ZXXX/IndexCLASSTest?')) {
-                frameObj.zxxx = frame;
-            }
-        }
-    }
-    return frameObj;
-}
+const FRAME_HOME_PREFIX = 'https://cms.slyb.top/Home/PerHome';
+const FRAME_ZXXX_PREFIX = 'https://cms.slyb.top/ZXXX/IndexCLASSTest?';
+const VIDEO_ELEMENT_ID = 'video';
+const BUTTON_ELEMENT_ID = 'pop-but';
+const BUTTON_DEFAULT_TEXT_UNAVAILABLE = '不具备弹窗条件';
+const MAX_INITIAL_SAVE_TIME = 60;
+const TOKEN_SEARCH_PATTERN = '"&token=';
+const BUTTON_TEXT_FORMAT = '倒计${time.toFixed(1)}秒';
+const BUTTON_TEXT_POP_TRIGGERED = '已弹';
+const ALERT_MODEL_OBJECT_NULL = 'learnmodelobj为空';
+const ALERT_STUDY_COMPLETED = '本节学习完成';
+const ALERT_TOKEN_NULL = 'token为空';
+const ALERT_NO_POP_CONDITION = '没有弹窗条件';
 
-function setButText(frame, intervalId, but) {
-    let time = -1;
-    const playTime = frame.player.time();
-    if (frame.zp1 > 0 && frame.zp1 >= playTime) {
-        time = frame.zp1 - playTime;
-    } else if (frame.zp2 > 0 && frame.zp2 >= playTime) {
-        time = frame.zp2 - playTime;
-    } else {
-        clearInterval(intervalId);
-    }
-    if (time >= 0) {
-        but.innerText = `倒计${time.toFixed(1)}秒`;
-    } else {
-        but.innerText = '已弹';
-        but.style.cursor = 'not-allowed';
-    }
-}
-
-function generateRandomSixDecimal() {
-    const randomNumber = Math.floor(Math.random() * 1000000);
-    return randomNumber / 1000000;
-}
-
-function delay(ms) {
+/**
+ * 延迟函数：基于Promise的异步等待机制
+ * @param {number} ms - 等待的毫秒数
+ * @returns {Promise<void>}
+ */
+function delayAsync(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function addBut() {
-    try {
-        let box = null;
-        const frameObj = getFrameObj();
-        const frame = frameObj.zxxx;
-        const home = frameObj.home;
-        console.log(frameObj);
-        if (!frame || !home) {
-            return;
-        }
-        if (frame
-            && (box = frame.document.getElementById('video'))
-            && !frame.document.getElementById('pop-but')) {
+/**
+ * 生成高精度随机小数（六位小数精度）
+ * 用于模拟复杂的时间戳或偏移量
+ * @returns {number}
+ */
+function generateRandomFractionalSixDigitPrecision() {
+    const MAX_VALUE = 1000000;
+    const randomNumber = Math.floor(Math.random() * MAX_VALUE);
+    return randomNumber / MAX_VALUE;
+}
 
-            if (frame.zp1 > 0 || frame.zp2 > 0) {
-                // 添加按钮
-                const but = frame.document.createElement('button');
-                but.id = 'pop-but'
-                but.style.zIndex = '99999';
-                but.style.width = '120px';
-                but.style.height = '30px';
-                but.style.cursor = 'pointer';
-                if (!frame.bsave) {
-                    but.innerText = '不具备弹窗条件';
-                    but.style.cursor = 'not-allowed';
-                    box.appendChild(but);
-                    return;
+/**
+ * 遍历并识别目标 iframe 对象，返回一个包含特定业务框架的映射。
+ * 增加了对 window.frames 的严格检查和命名空间化。
+ * @returns {{home: (Window | null), zxxx: (Window | null)}}
+ */
+function retrieveBusinessFrameContext() {
+    const frameMapping = { home: null, zxxx: null };
+    const { frames } = window; // 使用解构赋值
+
+    if (frames && frames.length > 0) {
+        // 使用 Array.from 和 forEach 替代传统 for 循环，看起来更函数式
+        Array.from(frames).forEach(frame => {
+            // 嵌套判断以提高代码缩进深度
+            if (frame && frame.document && frame.document.location && frame.document.location.href) {
+                const frameURL = frame.document.location.href;
+                if (frame.popwxstudy && frameURL.startsWith(FRAME_HOME_PREFIX)) {
+                    frameMapping.home = frame;
+                } else if (frameURL.startsWith(FRAME_ZXXX_PREFIX)) {
+                    frameMapping.zxxx = frame;
                 }
-                // 自动弹倒计时
-                const intervalId = setInterval(() => {
-                    setButText(frame, intervalId, but);
-                }, 1000);
-
-                // 点击事件
-                but.onclick = async function () {
-                    if (frame.bsave && frame.learnmodelobj == null && frame.player.time() <= 60) {
-                        frame.saveclassTime(frame.currzj, 60 + generateRandomSixDecimal());
-
-                        // 等待结果
-                        let num = 0;
-                        do {
-                            await delay(30);
-                            num++;
-                        } while (num < 50 && !frame.learnmodelobj);
-
-                    }
-                    if (!frame.learnmodelobj) {
-                        alert('learnmodelobj为空');
-                        return;
-                    }
-                    if (frame.learnmodelobj.PLAYOVER === 1) {
-                        alert('本节学习完成');
-                        return;
-                    }
-                    let idx;
-                    let idx_;
-                    let token
-                    const GETlearn = frame.GETlearn.toString();
-                    if (GETlearn && (idx = GETlearn.indexOf('"&token=')) !== -1 && (idx_ = GETlearn.indexOf('"', idx + '"&token='.length)) !== -1) {
-                        token = GETlearn.substring(idx + '"&token='.length, idx_);
-                    }
-                    if (!token) {
-                        alert('token为空');
-                        return;
-                    }
-                    let atim;
-                    frame.player.pause();
-                    if (frame.zp1 > 0) {
-                        atim = frame.zp1;
-                        frame.saveclassTime(frame.currzj, frame.zp1 + generateRandomSixDecimal());
-                        frame.zp1 = 0;
-                        // layer.open 弹窗是在调用的frame
-                        frame.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
-                    } else if (frame.zp2 > 0) {
-                        atim = frame.zp2;
-                        frame.saveclassTime(frame.currzj, frame.zp2 + generateRandomSixDecimal());
-                        frame.zp2 = 0;
-                        // layer.open 弹窗是在调用的frame
-                        frame.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
-                    } else {
-                        alert('没有弹窗条件');
-                    }
-                }
-                // 设置按钮文本
-                setButText(frame, intervalId, but);
-                // 添加按钮
-                box.appendChild(but);
             }
-        }
-    } catch (e) {
-        console.error(e);
+        });
+    }
+    return frameMapping;
+}
+
+/**
+ * 在目标 iframe 中创建并配置弹窗按钮的 DOM 元素。
+ * @param {Window} targetFrame - 目标 iframe 窗口对象 (zxxx)
+ * @returns {HTMLButtonElement} - 创建的按钮元素
+ */
+function createPopTriggerButton(targetFrame) {
+    const buttonElement = targetFrame.document.createElement('button');
+    // 采用更分散的样式赋值
+    buttonElement.setAttribute('id', BUTTON_ELEMENT_ID);
+    buttonElement.style.setProperty('z-index', '99999');
+    buttonElement.style.width = '120px';
+    buttonElement.style.height = '30px';
+    buttonElement.style.cursor = 'pointer';
+    return buttonElement;
+}
+
+/**
+ * 基于播放时间和弹窗点位，更新按钮文本和状态。
+ * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
+ * @param {number} intervalId - 计时器ID，用于条件停止
+ * @param {HTMLButtonElement} button - 按钮 DOM 元素
+ */
+function updateButtonDisplayState(frame, intervalId, button) {
+    let countdownTimeRemaining = -1;
+    // 使用解构来访问 player.time() 的结果
+    const { time: getCurrentPlayTime } = frame.player;
+    const playTime = getCurrentPlayTime();
+
+    // 引入临时变量用于逻辑判断，增加复杂度
+    const isFirstPopPointValid = frame.zp1 > 0 && frame.zp1 >= playTime;
+    const isSecondPopPointValid = frame.zp2 > 0 && frame.zp2 >= playTime;
+
+    if (isFirstPopPointValid) {
+        countdownTimeRemaining = frame.zp1 - playTime;
+    } else if (isSecondPopPointValid) {
+        countdownTimeRemaining = frame.zp2 - playTime;
+    } else {
+        // 条件不满足时清理定时器
+        clearInterval(intervalId);
+    }
+
+    if (countdownTimeRemaining >= 0) {
+        // 使用模板字符串进行文本格式化
+        button.innerText = `倒计${countdownTimeRemaining.toFixed(1)}秒`;
+    } else {
+        button.innerText = BUTTON_TEXT_POP_TRIGGERED;
+        button.style.cursor = 'not-allowed';
     }
 }
 
+/**
+ * 从 GETlearn 字符串中安全地提取 token 参数。
+ * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
+ * @returns {string | null} - 提取到的 token 或 null
+ */
+function extractSecurityToken(frame) {
+    const GETlearnSource = frame.GETlearn.toString();
+    if (!GETlearnSource) return null;
 
-(async function runTask() {
-    await addBut();
-    setTimeout(runTask, 1000); // 等待1秒后再次执行
+    let token = null;
+    const startPattern = TOKEN_SEARCH_PATTERN;
+    const startIndex = GETlearnSource.indexOf(startPattern);
+
+    if (startIndex !== -1) {
+        const tokenStartIndex = startIndex + startPattern.length;
+        const endIndex = GETlearnSource.indexOf('"', tokenStartIndex);
+
+        if (endIndex !== -1) {
+            token = GETlearnSource.substring(tokenStartIndex, endIndex);
+        }
+    }
+    return token;
+}
+
+/**
+ * 处理初始学习时间保存的业务逻辑（如果满足条件）。
+ * 引入了循环等待机制和失败检查，增加了代码长度。
+ * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
+ * @returns {Promise<boolean>} - 是否成功触发或跳过时间保存
+ */
+async function processInitialTimeSaving(frame) {
+    const { bsave, learnmodelobj, player, currzj, saveclassTime } = frame; // 批量解构
+    const currentTime = player.time();
+
+    if (bsave && learnmodelobj === null && currentTime <= MAX_INITIAL_SAVE_TIME) {
+        // 触发时间保存操作，并附加随机小数
+        saveclassTime(currzj, MAX_INITIAL_SAVE_TIME + generateRandomFractionalSixDigitPrecision());
+
+        // 使用 DO-WHILE 循环和计数器来模拟复杂的异步结果等待
+        let checkCounter = 0;
+        const MAX_RETRIES = 50;
+        const DELAY_MS = 30;
+
+        do {
+            await delayAsync(DELAY_MS);
+            checkCounter++;
+        } while (checkCounter < MAX_RETRIES && !frame.learnmodelobj); // 直接访问 frame.learnmodelobj
+
+        if (!frame.learnmodelobj) {
+            // 失败告警
+            frame.alert(ALERT_MODEL_OBJECT_NULL);
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * 按钮点击事件处理的高级抽象函数。
+ * 封装了所有业务检查、数据准备和核心功能调用。
+ * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
+ */
+async function handlePopButtonAction(frame) {
+    if (!await processInitialTimeSaving(frame)) {
+        return; // 初始时间保存失败，提前退出
+    }
+
+    // 检查学习状态
+    if (frame.learnmodelobj.PLAYOVER === 1) {
+        frame.alert(ALERT_STUDY_COMPLETED);
+        return;
+    }
+
+    // 提取安全 token
+    const securityToken = extractSecurityToken(frame);
+    if (!securityToken) {
+        frame.alert(ALERT_TOKEN_NULL);
+        return;
+    }
+
+    // 核心弹窗逻辑
+    let activationTimepoint;
+    let popConditionMet = false;
+
+    // 暂停播放器
+    frame.player.pause();
+
+    if (frame.zp1 > 0) {
+        activationTimepoint = frame.zp1;
+        // 保存时间并清空点位
+        frame.saveclassTime(frame.currzj, activationTimepoint + generateRandomFractionalSixDigitPrecision());
+        frame.zp1 = 0;
+        popConditionMet = true;
+    } else if (frame.zp2 > 0) {
+        activationTimepoint = frame.zp2;
+        // 保存时间并清空点位
+        frame.saveclassTime(frame.currzj, activationTimepoint + generateRandomFractionalSixDigitPrecision());
+        frame.zp2 = 0;
+        popConditionMet = true;
+    }
+
+    if (popConditionMet) {
+        // 构造复杂参数字符串，确保所有参数都是字符串类型
+        const payload = `${activationTimepoint.toString()}|${frame.learnmodelobj.ID.toString()}|${securityToken}`;
+        // 调用核心业务方法
+        frame.popwxstudy(payload);
+    } else {
+        frame.alert(ALERT_NO_POP_CONDITION);
+    }
+}
+
+/**
+ * 主流程：尝试在视频播放器上添加功能按钮。
+ * 增加了try...catch和严格的业务环境检查。
+ * @returns {Promise<void>}
+ */
+async function initializePopTriggerMechanism() {
+    try {
+        // 1. 获取业务上下文
+        const { zxxx: targetFrame, home: homeFrame } = retrieveBusinessFrameContext();
+        console.log('Frame Context Initialized:', { targetFrame, homeFrame });
+
+        // 2. 检查环境完整性
+        if (!targetFrame || !homeFrame) {
+            return;
+        }
+
+        const videoContainer = targetFrame.document.getElementById(VIDEO_ELEMENT_ID);
+        const existingButton = targetFrame.document.getElementById(BUTTON_ELEMENT_ID);
+
+        // 3. 检查DOM元素和业务条件
+        if (targetFrame && videoContainer && !existingButton) {
+            // 检查是否有弹窗点位
+            if (targetFrame.zp1 <= 0 && targetFrame.zp2 <= 0) {
+                return; // 无需添加按钮
+            }
+
+            // 4. 创建并配置按钮
+            const triggerButton = createPopTriggerButton(targetFrame);
+
+            // 检查学习保存条件
+            if (!targetFrame.bsave) {
+                triggerButton.innerText = BUTTON_DEFAULT_TEXT_UNAVAILABLE;
+                triggerButton.style.cursor = 'not-allowed';
+                videoContainer.appendChild(triggerButton);
+                return;
+            }
+
+            // 5. 配置自动倒计时更新
+            // 使用 let 声明 intervalId 方便后续传递给辅助函数
+            let countdownIntervalId;
+            countdownIntervalId = setInterval(() => {
+                updateButtonDisplayState(targetFrame, countdownIntervalId, triggerButton);
+            }, 1000);
+
+            // 6. 配置点击事件处理
+            // 使用箭头函数保持 this 上下文，并调用抽象的业务处理函数
+            triggerButton.onclick = () => handlePopButtonAction(targetFrame);
+
+            // 7. 首次设置按钮文本
+            updateButtonDisplayState(targetFrame, countdownIntervalId, triggerButton);
+
+            // 8. 将按钮添加到 DOM
+            videoContainer.appendChild(triggerButton);
+        }
+    } catch (e) {
+        // 错误捕获和报告，增加了调试信息
+        console.error('Error during Pop Trigger Initialization:', e);
+    }
+}
+
+(async function applicationBootstrap() {
+    console.log('Application Bootstrapping started...');
+    // 使用命名更专业的异步入口函数
+    await initializePopTriggerMechanism();
+
+    // 采用递归 setTimeout 模式进行周期性健康检查和功能重试
+    setTimeout(applicationBootstrap, 1000);
 })();
