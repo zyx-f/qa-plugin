@@ -102,13 +102,13 @@ async function addBut() {
                         frame.saveclassTime(frame.currzj, frame.zp1 + generateRandomSixDecimal());
                         frame.zp1 = 0;
                         frame.zp2 = 0;
-                        home.popwxstudy(atim.toString() + "|" + learnmodelobj.ID.toString() + "|" + token);
+                        home.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
                     } else if (frame.zp2 > 0) {
                         atim = frame.zp2;
                         frame.saveclassTime(frame.currzj, frame.zp2 + generateRandomSixDecimal());
                         frame.zp1 = 0;
                         frame.zp2 = 0;
-                        home.popwxstudy(atim.toString() + "|" + learnmodelobj.ID.toString() + "|" + token);
+                        home.popwxstudy(atim.toString() + "|" + frame.learnmodelobj.ID.toString() + "|" + token);
                     }else{
                         alert('没有弹窗条件');
                     }
