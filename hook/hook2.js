@@ -3,6 +3,7 @@ const FRAME_ZXXX_PREFIX = 'https://cms.slyb.top/ZXXX/IndexCLASSTest?';
 const VIDEO_ELEMENT_ID = 'video';
 const BUTTON_ELEMENT_ID = 'pop-but';
 const BUTTON_DEFAULT_TEXT_UNAVAILABLE = '不具备弹窗条件';
+const BUTTON_DEFAULT_TEXT_NO_POP_UP = '不具备弹窗时间点位';
 const MAX_INITIAL_SAVE_TIME = 60;
 const TOKEN_SEARCH_PATTERN = '"&token=';
 const BUTTON_TEXT_FORMAT = '倒计${time.toFixed(1)}秒';
@@ -23,7 +24,6 @@ function delayAsync(ms) {
 
 /**
  * 生成高精度随机小数（六位小数精度）
- * 用于模拟复杂的时间戳或偏移量
  * @returns {number}
  */
 function generateRandomFractionalSixDigitPrecision() {
@@ -38,8 +38,8 @@ function generateRandomFractionalSixDigitPrecision() {
  * @returns {{home: (Window | null), zxxx: (Window | null)}}
  */
 function retrieveBusinessFrameContext() {
-    const frameMapping = { home: null, zxxx: null };
-    const { frames } = window; // 使用解构赋值
+    const frameMapping = {home: null, zxxx: null};
+    const {frames} = window; // 使用解构赋值
 
     if (frames && frames.length > 0) {
         // 使用 Array.from 和 forEach 替代传统 for 循环，看起来更函数式
@@ -68,7 +68,7 @@ function createPopTriggerButton(targetFrame) {
     // 采用更分散的样式赋值
     buttonElement.setAttribute('id', BUTTON_ELEMENT_ID);
     buttonElement.style.setProperty('z-index', '99999');
-    buttonElement.style.width = '120px';
+    buttonElement.style.width = '150px';
     buttonElement.style.height = '30px';
     buttonElement.style.cursor = 'pointer';
     return buttonElement;
@@ -77,13 +77,13 @@ function createPopTriggerButton(targetFrame) {
 /**
  * 基于播放时间和弹窗点位，更新按钮文本和状态。
  * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
- * @param {number} intervalId - 计时器ID，用于条件停止
+ * @param {null} intervalId - 计时器ID，用于条件停止
  * @param {HTMLButtonElement} button - 按钮 DOM 元素
  */
 function updateButtonDisplayState(frame, intervalId, button) {
     let countdownTimeRemaining = -1;
     // 使用解构来访问 player.time() 的结果
-    const { time: getCurrentPlayTime } = frame.player;
+    const {time: getCurrentPlayTime} = frame.player;
     const playTime = getCurrentPlayTime();
 
     // 引入临时变量用于逻辑判断，增加复杂度
@@ -105,6 +105,21 @@ function updateButtonDisplayState(frame, intervalId, button) {
     } else {
         button.innerText = BUTTON_TEXT_POP_TRIGGERED;
         button.style.cursor = 'not-allowed';
+        try {
+            // 扫码后的确认
+            frame.frames.forEach(frame => {
+                if (frame.name === 'layui-layer-iframe1') {
+                    let layuiBut;
+                    const textEle = frame.document.querySelector('.layui-layer-content.layui-layer-padding');
+                    if (textEle && textEle.textContent.trim() === '微信验证通过,请点击继续学习' &&
+                        (layuiBut = (frame.document.querySelector('.layui-layer-btn.layui-layer-btn- .layui-layer-btn0')))) {
+                        layuiBut.click();
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("确认按钮错误", e);
+        }
     }
 }
 
@@ -134,12 +149,11 @@ function extractSecurityToken(frame) {
 
 /**
  * 处理初始学习时间保存的业务逻辑（如果满足条件）。
- * 引入了循环等待机制和失败检查，增加了代码长度。
  * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
  * @returns {Promise<boolean>} - 是否成功触发或跳过时间保存
  */
 async function processInitialTimeSaving(frame) {
-    const { bsave, learnmodelobj, player, currzj, saveclassTime } = frame; // 批量解构
+    const {bsave, learnmodelobj, player, currzj, saveclassTime} = frame; // 批量解构
     const currentTime = player.time();
 
     if (bsave && learnmodelobj === null && currentTime <= MAX_INITIAL_SAVE_TIME) {
@@ -166,8 +180,7 @@ async function processInitialTimeSaving(frame) {
 }
 
 /**
- * 按钮点击事件处理的高级抽象函数。
- * 封装了所有业务检查、数据准备和核心功能调用。
+ * 按钮点击事件处理
  * @param {Window} frame - 目标 iframe 窗口对象 (zxxx)
  */
 async function handlePopButtonAction(frame) {
@@ -220,15 +233,14 @@ async function handlePopButtonAction(frame) {
 }
 
 /**
- * 主流程：尝试在视频播放器上添加功能按钮。
- * 增加了try...catch和严格的业务环境检查。
+ * 在视频播放器上添加功能按钮
  * @returns {Promise<void>}
  */
 async function initializePopTriggerMechanism() {
     try {
         // 1. 获取业务上下文
-        const { zxxx: targetFrame, home: homeFrame } = retrieveBusinessFrameContext();
-        console.log('Frame Context Initialized:', { targetFrame, homeFrame });
+        const {zxxx: targetFrame, home: homeFrame} = retrieveBusinessFrameContext();
+        console.log('Frame Context Initialized:', {targetFrame, homeFrame});
 
         // 2. 检查环境完整性
         if (!targetFrame || !homeFrame) {
@@ -240,10 +252,6 @@ async function initializePopTriggerMechanism() {
 
         // 3. 检查DOM元素和业务条件
         if (targetFrame && videoContainer && !existingButton) {
-            // 检查是否有弹窗点位
-            if (targetFrame.zp1 <= 0 && targetFrame.zp2 <= 0) {
-                return; // 无需添加按钮
-            }
 
             // 4. 创建并配置按钮
             const triggerButton = createPopTriggerButton(targetFrame);
@@ -254,6 +262,13 @@ async function initializePopTriggerMechanism() {
                 triggerButton.style.cursor = 'not-allowed';
                 videoContainer.appendChild(triggerButton);
                 return;
+            }
+            // 检查是否有弹窗点位
+            if (targetFrame.zp1 <= 0 && targetFrame.zp2 <= 0) {
+                triggerButton.innerText = BUTTON_DEFAULT_TEXT_NO_POP_UP;
+                triggerButton.style.cursor = 'not-allowed';
+                videoContainer.appendChild(triggerButton);
+                return; // 无需添加按钮
             }
 
             // 5. 配置自动倒计时更新
@@ -281,9 +296,14 @@ async function initializePopTriggerMechanism() {
 
 (async function applicationBootstrap() {
     console.log('Application Bootstrapping started...');
-    // 使用命名更专业的异步入口函数
     await initializePopTriggerMechanism();
-
-    // 采用递归 setTimeout 模式进行周期性健康检查和功能重试
-    setTimeout(applicationBootstrap, 1000);
 })();
+
+// 独立的定时器
+setInterval(async () => {
+    try {
+        await initializePopTriggerMechanism();
+    } catch (error) {
+        console.error('Periodic check failed:', error);
+    }
+}, 1000);
