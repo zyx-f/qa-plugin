@@ -192,6 +192,7 @@ async function handlePopButtonAction(frame) {
 
     // 暂停播放器
     frame.player.pause();
+    const currentTime = frame.player.time();
 
     if (frame.zp1 > 0) {
         activationTimepoint = frame.zp1;
@@ -215,14 +216,14 @@ async function handlePopButtonAction(frame) {
         // 定时器，用于点击扫码确认
         let scanIntervalId;
         scanIntervalId = setInterval(() => {
-            scancodeConfirm(frame, scanIntervalId, activationTimepoint);
+            scancodeConfirm(frame, scanIntervalId, currentTime);
         }, 1000);
     } else {
         frame.alert(ALERT_NO_POP_CONDITION);
     }
 }
 
-function scancodeConfirm(targetFrame, scanIntervalId, activationTimepoint) {
+function scancodeConfirm(targetFrame, scanIntervalId, currentTime) {
     try {
         // 扫码后的确认
         for (let i = 0; i < targetFrame.frames.length; i++) {
@@ -233,7 +234,7 @@ function scancodeConfirm(targetFrame, scanIntervalId, activationTimepoint) {
                 if (textEle && textEle.textContent.trim() === '微信验证通过,请点击继续学习' &&
                     (layuiBut = (frame.document.querySelector('.layui-layer-btn.layui-layer-btn- .layui-layer-btn0')))) {
                     layuiBut.click();
-                    targetFrame.player.seek(activationTimepoint);
+                    targetFrame.player.seek(currentTime);
                     clearInterval(scanIntervalId);
                 }
             }
@@ -251,7 +252,7 @@ async function initializePopTriggerMechanism() {
     try {
         // 1. 获取业务上下文
         const {zxxx: targetFrame, home: homeFrame} = retrieveBusinessFrameContext();
-        console.log('Frame Context Initialized:', {targetFrame, homeFrame});
+        // console.log('Frame Context Initialized:', {targetFrame, homeFrame});
 
         // 2. 检查环境完整性
         if (!targetFrame || !homeFrame) {
