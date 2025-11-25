@@ -214,16 +214,17 @@ async function handlePopButtonAction(frame) {
         // 调用核心业务方法
         frame.popwxstudy(payload);
         // 定时器，用于点击扫码确认
+        let time = new Date().getTime();
         let scanIntervalId;
         scanIntervalId = setInterval(() => {
-            scancodeConfirm(frame, scanIntervalId, currentTime);
+            scancodeConfirm(frame, scanIntervalId, currentTime, time);
         }, 1000);
     } else {
         frame.alert(ALERT_NO_POP_CONDITION);
     }
 }
 
-function scancodeConfirm(targetFrame, scanIntervalId, currentTime) {
+function scancodeConfirm(targetFrame, scanIntervalId, currentTime, time) {
     try {
         // 扫码后的确认
         for (let i = 0; i < targetFrame.frames.length; i++) {
@@ -231,13 +232,16 @@ function scancodeConfirm(targetFrame, scanIntervalId, currentTime) {
             if (frame.name === 'layui-layer-iframe1') {
                 let layuiBut;
                 const textEle = frame.document.querySelector('.layui-layer-content.layui-layer-padding');
-                if (textEle && textEle.textContent.trim() === '微信验证通过,请点击继续学习' &&
+                if (textEle && (textEle.textContent.trim() === '微信验证通过,请点击继续学习' || textEle.textContent.trim().startsWith('第1次微信验证未通过')) &&
                     (layuiBut = (frame.document.querySelector('.layui-layer-btn.layui-layer-btn- .layui-layer-btn0')))) {
                     layuiBut.click();
                     targetFrame.player.seek(currentTime);
                     clearInterval(scanIntervalId);
                 }
             }
+        }
+        if(new Date().getTime() - time > 90000){
+            clearInterval(scanIntervalId);
         }
     } catch (e) {
         console.error("确认按钮错误", e);
