@@ -19,8 +19,43 @@
         console.log(window.dataMultiQa)
     });
 
+    function wxLoginScript() {
+        try {
+            if (window.frames.length > 1 && window.frames[1].frames.length >= 1) {
+                let wxFrame;
+                const frames = window.frames[1].frames;
+                for (let i = 0; i < frames.length; i++) {
+                    let frame = frames[i];
+                    if (frame.location.href.startsWith('https://cms.slyb.top/WeChat/wxqrcodebind')
+                        || frame.location.href.startsWith('https://cms.slyb.top/WeChat/wxqrcodestudy')) {
+                        wxFrame = frame;
+                        break;
+                    }
+                }
+                if (wxFrame && !wxFrame.document.body.dataset.hook3) {
+                    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+                    const script1 = wxFrame.document.createElement('script');
+                    script1.src = chrome.runtime.getURL('hook/hook3.js');
+                    script1.id = 'script-hook3';
+
+                    script1.onload = () => {
+                        wxFrame.document.body.dataset.hook3 = 'true';
+                        console.log('hook3.js 已成功加载。');
+                        script1.remove(); // 保持 DOM 干净
+                    };
+                    wxFrame.document.body.appendChild(script1);
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
 
     function qa() {
+        if (location.hostname === 'cms.slyb.top') {
+            wxLoginScript();
+        }
         if (hostArr.includes(location.hostname)) {
             if (document.querySelectorAll('.ok_daan').length > 0) {
                 learnQq();
@@ -121,9 +156,9 @@
                             opItems[i].click();
                         }
                         let answer = opItems[i].querySelector('.opAnswer').textContent.trim();
-                        if(t!=='判断题' ){
+                        if (t !== '判断题') {
                             let idx = answer.indexOf('. ');
-                            if(idx !== -1){
+                            if (idx !== -1) {
                                 answer = answer.substring(idx + 2);
                             }
                         }

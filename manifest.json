@@ -34,6 +34,14 @@
         "content/content.js",
         "photo/crypto-js.min.js"
       ]
+    },
+    {
+      "matches": ["https://open.weixin.qq.com/connect/qrconnect?*"],
+      "js": [
+        "content/WxLoginBut.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_end"
     }
   ],
   "declarative_net_request": {
@@ -52,6 +60,7 @@
         "hook/hook.js",
         "hook/hook1.js",
         "hook/hook2.js",
+        "hook/hook3.js",
         "photo/crypto-js.min.js"
       ],
       "matches": [
