@@ -52,6 +52,7 @@
         "hook/hook.js",
         "hook/hook1.js",
         "hook/hook2.js",
+        "hook/hook3.js",
         "photo/crypto-js.min.js"
       ],
       "matches": [

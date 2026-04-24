@@ -74,16 +74,16 @@
                     if (layerCont && layerCont.textContent === '本节学习完成，请点击下一节课继续学习。') {
                         let but = document.querySelector('.layui-layer .layui-layer-btn0');
                         if (but) {
-                            // let time = but.dataset.time;
-                            // time = time ? parseInt(time) : 240;
-                            // if (time <= 1) {
-                            //     but.click();
-                            // } else {
-                            //     time--;
-                            //     console.log(`倒计时：${time}秒后点击`);
-                            //     but.dataset.time = `${time}`;
-                            // }
-                            but.click();
+                            let time = but.dataset.time;
+                            time = time ? parseInt(time) : 30;
+                            if (time <= 1) {
+                                but.click();
+                            } else {
+                                time--;
+                                console.log(`倒计时：${time}秒后点击`);
+                                but.dataset.time = `${time}`;
+                            }
+                            // but.click();
                         }
                     }
                 }
@@ -556,6 +556,17 @@
 
         script1.onload = () => {
             console.log('hook2.js 已成功加载。');
+            script1.remove(); // 保持 DOM 干净
+        };
+        document.body.appendChild(script1);
+    }
+
+    if (location.hostname === 'px1027-kfkc.webtrn.cn' || location.hostname === 'localhost') {
+        const script1 = document.createElement('script');
+        script1.src = chrome.runtime.getURL('hook/hook3.js');
+
+        script1.onload = () => {
+            console.log('hook3.js 已成功加载。');
             script1.remove(); // 保持 DOM 干净
         };
         document.body.appendChild(script1);
