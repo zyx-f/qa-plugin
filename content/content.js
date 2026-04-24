@@ -55,7 +55,7 @@
 
                     script1.onload = () => {
                         console.log('hook1.js 已成功加载。');
-                        // script1.remove(); // 保持 DOM 干净
+                        //  script1.remove(); // 保持 DOM 干净
                     };
 
                     document.body.appendChild(script1);
