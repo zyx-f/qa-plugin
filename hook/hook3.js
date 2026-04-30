@@ -18,7 +18,7 @@ async function getIframe() {
 }
 
 async function taskFunc(mainView, videoView) {
-    let but = videoView.document.querySelector('.layui-layer.layui-layer-dialog .layui-layer-btn0');
+    let but = document.querySelector('.layui-layer.layui-layer-dialog .layui-layer-btn0');
     if (but) {
         but.click();
     }
