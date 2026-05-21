@@ -27,7 +27,7 @@
         "http://*/*",
         "https://*/*"
       ],
-      //      "matches": ["http://gzak.gzsjzyxh.cn/*", "https://gzak.gzsjzyxh.cn/*"],
+      //      "matches": ["http://gzak.gzsjzyxh.cn/*",  "https://gzak.gzsjzyxh.cn/*"],
       "js": [
         "content/config.js",
         "content/data.js",
