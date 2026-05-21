@@ -22,7 +22,7 @@ async function getIframe() {
             learn = findMain;
         }
     }
-    return {main: video, video: video, learn: learn}
+    return {main: main, video: video, learn: learn}
 }
 
 async function taskFunc(mainView, videoView, learnView) {
