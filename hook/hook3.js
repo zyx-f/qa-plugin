@@ -1,23 +1,31 @@
 async function getIframe() {
+    let main = null;
+    let video = null;
+    let learn = null;
     const iframes = window.frames;
     for (let i = 0; i < iframes.length; i++) {
-        const main = iframes[i];
-        if (main.name === 'mainContent') {
-            let len = main.window.length;
+        const findMain = iframes[i];
+        if (findMain.name === 'mainContent') {
+            main = findMain;
+            let len = findMain.window.length;
             for (let k = 0; k < len; k++) {
-                const video = main.window[k];
-                if (video.name === 'mainFrame') {
-                    console.log(main.name)
-                    console.log(video.name)
-                    return {main: main, video}
+                const findVideo = findMain.window[k];
+                if (findVideo.name === 'mainFrame') {
+                    video = findVideo;
+                    console.log(findMain.name);
+                    console.log(findVideo.name);
+                    break;
                 }
             }
+        } else if (findMain.document.documentURI.indexOf('learnHelper-main.action') !== -1) {
+            // let cha = main.document.querySelector("a.btn.btn-icon.shut-btn");
+            learn = findMain;
         }
     }
-    return {main: null, video: null}
+    return {main: video, video: video, learn: learn}
 }
 
-async function taskFunc(mainView, videoView) {
+async function taskFunc(mainView, videoView, learnView) {
     let but = document.querySelector('.layui-layer.layui-layer-dialog .layui-layer-btn0');
     if (but) {
         but.click();
@@ -25,15 +33,23 @@ async function taskFunc(mainView, videoView) {
     let player = videoView.document.querySelector('#player_pause');
     let playerTime1 = videoView.document.querySelector('#screen_player_time_1');
     let playerTime2 = videoView.document.querySelector('#screen_player_time_2');
-    let stop = player.style.display === 'block' || player.style.display === ''
-    if (player && stop && playerTime1 && playerTime2) {
+    let volumeIcon = videoView.document.querySelector('#volumeIcon.icon-vol-fill');
+    if (player && playerTime1 && playerTime2) {
+        let stop = player.style.display === 'block' || player.style.display === ''
+        let video = videoView.document.querySelector('video');
         let time1 = minutesSecondsToSeconds(playerTime1.textContent);
         let time2 = minutesSecondsToSeconds(playerTime2.textContent);
-        if (time1 !== null && time2 !== null && !(time1 === 0 && time2 === 0)) {
+        if (video && stop && time1 !== null && time2 !== null && !(time1 === 0 && time2 === 0)) {
             if (time1 < time2) {
+                let learnHelper = document.querySelector('#learn-helper-main');
+                if (learnHelper && learnHelper.style.display === 'block' || learnHelper.style.display === '') {
+                    let cha = learnView.document.querySelector("a.btn.btn-icon.shut-btn");
+                    cha && cha.click();
+                }
+                volumeIcon && volumeIcon.click();
                 // player.click();
-                // simulateRealisticClick(player);
-                simulateRealisticSpacebar(player);
+                await simulateRealisticClick(player);
+                // await simulateRealisticSpacebar(player);
             } else {
                 const element = mainView.document.querySelector('.s_point.hasappend.s_pointerct');
                 const nextSibling = element.nextElementSibling;
@@ -159,15 +175,17 @@ function minutesSecondsToSeconds(timeStr) {
 if (location.hostname === 'px1027-kfkc.webtrn.cn' || location.hostname === 'localhost') {
     let mainView;
     let videoView;
+    let learnView;
     setInterval(async () => {
         try {
             if (!mainView || !videoView) {
-                const {main, video} = await getIframe();
+                const {main, video, learn} = await getIframe();
                 mainView = main;
                 videoView = video;
+                learnView = learn;
             }
-            if (mainView && videoView) { // AliPlayerComponentCtrl
-                await taskFunc(mainView, videoView);
+            if (mainView && videoView && learnView) { // AliPlayerComponentCtrl
+                await taskFunc(mainView, videoView, learnView);
             }
         } catch (error) {
             console.error('hook3 taskFunc:', error);
