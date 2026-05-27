@@ -10,7 +10,7 @@ async function getIframe() {
             let len = findMain.window.length;
             for (let k = 0; k < len; k++) {
                 const findVideo = findMain.window[k];
-                if (findVideo.name === 'mainFrame') {
+                if (findVideo.name === 'mainFrame' || findVideo.name === 'AliPlayerComponentCtrl') {
                     video = findVideo;
                     console.log(findMain.name);
                     console.log(findVideo.name);
@@ -173,19 +173,11 @@ function minutesSecondsToSeconds(timeStr) {
 }
 
 if (location.hostname === 'px1027-kfkc.webtrn.cn' || location.hostname === 'localhost') {
-    let mainView;
-    let videoView;
-    let learnView;
     setInterval(async () => {
         try {
-            if (!mainView || !videoView) {
-                const {main, video, learn} = await getIframe();
-                mainView = main;
-                videoView = video;
-                learnView = learn;
-            }
-            if (mainView && videoView && learnView) { // AliPlayerComponentCtrl
-                await taskFunc(mainView, videoView, learnView);
+            const {main, video, learn} = await getIframe();
+            if (main && video && learn) {
+                await taskFunc(main, video, learn);
             }
         } catch (error) {
             console.error('hook3 taskFunc:', error);
